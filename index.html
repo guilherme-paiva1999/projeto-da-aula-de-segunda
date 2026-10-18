@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Selection Sort</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -452,6 +453,36 @@ td{border-bottom:1px solid var(--surface2)}
 .big.hot{box-shadow:inset 0 0 0 3px var(--done)}
 .big.hot b{color:var(--done)}
 @media (max-width:700px){.cost-main{grid-template-columns:minmax(0,1fr)}}
+
+/* a ideia animada */
+.step3{transition:box-shadow .3s,transform .3s}
+.step3.on{box-shadow:inset 0 0 0 3px var(--done);transform:translateY(-4px)}
+.idea-demo{margin-top:18px;padding:22px}
+.mini{position:relative;height:190px;margin-bottom:34px;border-bottom:3px solid var(--ink)}
+.mb{position:absolute;bottom:0;width:18%;background:var(--idle);border-radius:8px 8px 0 0;transition:left .7s cubic-bezier(.45,0,.25,1),background .25s}
+.mb b{position:absolute;bottom:100%;left:0;right:0;text-align:center;font:700 1.1rem var(--display);padding-bottom:4px}
+.mb.is-scan{background:var(--scan)}.mb.is-min{background:var(--min)}.mb.is-sorted{background:var(--done)}.mb.is-hot{background:var(--hot)}
+/* estabilidade */
+.sdemo-wrap{padding:22px}
+.sd-lab{font:600 .85rem var(--mono);color:var(--muted);margin-bottom:10px}
+.sd-stage{position:relative;height:84px}
+.sd-chip{position:absolute;top:0;width:31%;transition:left .9s cubic-bezier(.45,0,.25,1)}
+.sd-chip .in{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:16px 18px;border-radius:16px;background:var(--bg);box-shadow:inset 0 0 0 3px transparent;font:700 1.25rem var(--display);transition:box-shadow .3s}
+.sd-chip .in.alt{background-image:repeating-linear-gradient(135deg,rgba(128,150,170,.3) 0 6px,transparent 6px 12px)}
+.sd-chip .in b{font:700 1.5rem var(--mono)}
+.sd-chip .in.min{box-shadow:inset 0 0 0 3px var(--min)}
+.sd-chip .in.ok{box-shadow:inset 0 0 0 3px var(--done)}
+.sd-chip .in.hot{box-shadow:inset 0 0 0 3px var(--hot)}
+.sd-chip .in.hop{animation:sdHop .9s ease-in-out}
+@keyframes sdHop{50%{transform:translateY(-46px) scale(1.06)}}
+.sd-cap{min-height:3em;margin-top:10px;font:600 1.1rem var(--display)}
+.sd-ideal{margin-top:6px;max-height:0;opacity:0;overflow:hidden;transition:max-height .5s,opacity .5s}
+.sd-ideal.show{max-height:120px;opacity:1}
+.sd-row{display:flex;gap:8px;flex-wrap:wrap;font:700 1.05rem var(--mono)}
+.sd-row .tk{padding:6px 14px;border-radius:99px;background:var(--bg)}
+.sd-row .tk.alt{background-image:repeating-linear-gradient(135deg,rgba(128,150,170,.3) 0 5px,transparent 5px 10px)}
+.sdemo-wrap .verdict{margin-top:12px}
+@media (max-width:520px){.sd-chip .in{padding:10px;font-size:1rem}.sd-chip .in b{font-size:1.1rem}}
 </style>
 
 <header class="top">
@@ -490,6 +521,7 @@ td{border-bottom:1px solid var(--surface2)}
   <div class="card hero-viz" aria-label="Animação do Selection Sort ordenando 8 números">
     <div id="heroViz"></div>
     <div class="hero-stat"><span>comparações <b id="hCmp">0</b></span><span>trocas <b id="hSwp">0</b></span></div>
+    <div class="controls"><button type="button" class="btn primary" id="hNext">Próximo passo</button><button type="button" class="btn ghost" id="hNew">Embaralhar</button></div>
   </div>
 </section>
 
@@ -501,6 +533,15 @@ td{border-bottom:1px solid var(--surface2)}
     <div class="card step3"><div class="n">1</div><h3>Procurar</h3><p>Ache o menor número da lista.</p></div>
     <div class="card step3"><div class="n">2</div><h3>Trocar</h3><p>Coloque ele na primeira posição.</p></div>
     <div class="card step3"><div class="n">3</div><h3>Repetir</h3><p>Faça de novo com o que sobrou.</p></div>
+  </div>
+  <div class="card idea-demo">
+    <div class="mini" id="miniBars" aria-label="Animação das três etapas com cinco números"></div>
+    <div class="controls">
+      <button type="button" class="btn ghost" id="miniPrev">Voltar</button>
+      <button type="button" class="btn primary" id="miniNext">Próximo</button>
+      <button type="button" class="btn ghost" id="miniReset">Recomeçar</button>
+      <span class="chip" id="miniCap"></span>
+    </div>
   </div>
 </section>
 
@@ -633,43 +674,21 @@ td{border-bottom:1px solid var(--surface2)}
 <section class="wrap sec" id="estabilidade">
   <div class="sec-head">
     <h2>Ele mantém a ordem de quem empata?</h2>
+    <p class="lead">Ordenar os alunos pela nota. Ana e Bruno têm nota 7.</p>
   </div>
-  <div class="stab-grid">
-    <div class="card pad" id="stabPlayer"></div>
-    <div class="card defbox">
-      <h3>Acompanhe os dois 4</h3>
-      <p>A barra listrada é o <b>4 (b)</b>.</p>
-      <div class="order" id="stabOrder" aria-live="polite"></div>
-      <div class="verdict" id="stabVerdict"></div>
+  <div class="card sdemo-wrap">
+    <div class="sd-lab">Antes de ordenar: Ana vem antes do Bruno</div>
+    <div class="sd-stage" id="sdStage" aria-live="polite"></div>
+    <div class="sd-cap" id="sdCap"></div>
+    <div class="sd-ideal" id="sdIdeal">
+      <div class="sd-lab">O certo seria (empatados mantêm a ordem)</div>
+      <div class="sd-row" id="sdIdealRow"></div>
     </div>
-  </div>
-  <div class="card cause" id="cause">
-    <h3>A causa, passo a passo</h3>
-    <div class="tabs" role="tablist" aria-label="Exemplo" style="margin-bottom:12px">
-      <button type="button" class="tab cmode" role="tab" aria-selected="true" data-mode="num">Com números</button>
-      <button type="button" class="tab cmode" role="tab" aria-selected="false" data-mode="alu">Com alunos</button>
-    </div>
-    <div class="cause-grid" style="grid-template-columns:minmax(0,1fr)">
-      <div>
-        <div class="cells" id="cCells" aria-live="polite"></div>
-        <div class="cstep" id="cText"></div>
-        <div class="cnav">
-          <button type="button" class="btn ghost" id="cPrev">Anterior</button>
-          <button type="button" class="btn primary" id="cNext">Próximo</button>
-          <span class="cnt" id="cCnt"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="why" style="grid-template-columns:minmax(0,1fr)">
-    <div class="card">
-      <h3>Ordem de quem empata</h3>
-      <p class="lab">Antes</p>
-      <div class="order"><span class="tk">Ana 7</span><span class="tk alt">Bruno 7</span><span class="tk">Carla 5</span></div>
-      <p class="lab">Como deveria ficar (mantém a ordem)</p>
-      <div class="order"><span class="tk">Carla 5</span><span class="tk">Ana 7</span><span class="tk alt">Bruno 7</span></div>
-      <p class="lab">Como o Selection Sort deixa</p>
-      <div class="order"><span class="tk">Carla 5</span><span class="tk alt">Bruno 7</span><span class="tk">Ana 7</span></div>
+    <div class="verdict" id="sdVerdict" hidden></div>
+    <div class="cnav">
+      <button type="button" class="btn ghost" id="sdPrev">Voltar</button>
+      <button type="button" class="btn primary" id="sdNext">Próximo</button>
+      <span class="cnt" id="sdCnt"></span>
     </div>
   </div>
 </section>
@@ -950,12 +969,14 @@ Player.prototype.stop=function(){clearTimeout(this.timer);this.timer=null;this.p
     viz=new Viz(el,toItems(vals),{pointers:['i','min'],height:230});
     el.style.setProperty('--t','260ms');
     steps=trace(toItems(vals)).filter(function(s){return s.tag==='init'||s.tag==='cmp'||s.tag==='swap'||s.tag==='done';});
-    k=0;tick();
+    k=0;show();
   }
-  function tick(){
-    var s=steps[k];viz.setState(s);hc.textContent=s.comps;hs.textContent=s.swaps;k++;
-    if(k>=steps.length){tm=setTimeout(start,2600);}else{tm=setTimeout(tick,330);}
+  function show(){
+    var s=steps[k];viz.setState(s);hc.textContent=s.comps;hs.textContent=s.swaps;
+    $('#hNext').textContent=k>=steps.length-1?'Ordenar outra lista':'Próximo passo';
   }
+  $('#hNext').addEventListener('click',function(){if(k>=steps.length-1){start();}else{k++;show();}});
+  $('#hNew').addEventListener('click',start);
   start();
 })();
 
@@ -1158,58 +1179,67 @@ renderCode();
   upd();
 })();
 
-/* ---------- estabilidade ---------- */
+/* ---------- a ideia: mini animação das 3 etapas ---------- */
 (function(){
-  var items=[{v:4,tag:'a'},{v:4,tag:'b'},{v:2}];
-  var ord=$('#stabOrder'),ver=$('#stabVerdict');
-  var p=new Player($('#stabPlayer'),{id:'stab',legend:false,height:200,pointers:['i','j','min'],onStep:function(s,pl){
-    var fours=s.order.filter(function(id){return pl.items[id].v===4;});
-    var inv=pl.items[fours[0]].tag==='b';
-    ord.innerHTML='<span>Ordem dos dois 4:</span>'+fours.map(function(id){var t=pl.items[id].tag;return '<span class="tk'+(t==='b'?' alt':'')+'">4 ('+t+')</span>';}).join('<span>→</span>');
-    if(s.tag==='done'||s.sorted.length>=1){
-      if(inv){if(s.tag==='swap'&&s.hot)prof('Olha só! O 4 (a) passou por cima do 4 (b). Ordem trocada!',{anim:'shake',priority:3,target:'#stabPlayer'});ver.className='verdict bad';ver.textContent='Os dois 4 trocaram de ordem. Um algoritmo estável manteria 4 (a) antes de 4 (b).';}
-      else{ver.className='verdict ok';ver.textContent='Por enquanto os dois 4 estão na ordem original.';}
-    }else{ver.className='verdict ok';ver.textContent='Dê o primeiro passo da troca e observe os dois 4.';}
-  }});
-  p.load(items);
+  var box=$('#miniBars'),cards=$$('.step3'),nxB=$('#miniNext'),pvB=$('#miniPrev'),cap=$('#miniCap');
+  var items=toItems([5,3,8,1,4]),T=trace(items),F=[];
+  T.forEach(function(st){
+    if(st.tag==='init'||st.pass>2)return;
+    var card=st.tag==='swap'?1:(st.tag==='outer'&&st.i>0?2:0);
+    F.push({s:st,card:card});
+  });
+  var bars=items.map(function(it){var d=h('div','mb');d.innerHTML='<b>'+it.v+'</b>';d.style.height=(it.v*11+14)+'%';box.appendChild(d);return d;});
+  var NAME=['Procurar o menor','Trocar','Repetir com o resto'];
+  var k=0;
+  function draw(){
+    var f=F[k],st=f.s;
+    st.order.forEach(function(id,pos){bars[id].style.left=(pos*20+1)+'%';});
+    bars.forEach(function(b,id){
+      b.className='mb'+(st.sorted.indexOf(id)>=0?' is-sorted':'')+(st.hot&&st.hot.indexOf(id)>=0?' is-hot':'');
+    });
+    if(st.j!=null&&st.tag!=='swap')bars[st.order[st.j]].classList.add('is-scan');
+    if(st.min!=null&&st.tag!=='swap')bars[st.order[st.min]].classList.add('is-min');
+    cards.forEach(function(c,n){c.classList.toggle('on',n===f.card);});
+    cap.textContent=NAME[f.card]+' · '+(k+1)+'/'+F.length;
+    pvB.disabled=k===0;nxB.disabled=k===F.length-1;
+  }
+  nxB.addEventListener('click',function(){if(k<F.length-1){k++;draw();act('ideia');}});
+  pvB.addEventListener('click',function(){if(k>0){k--;draw();}});
+  $('#miniReset').addEventListener('click',function(){k=0;draw();});
+  draw();
 })();
 
-/* ---------- causa da instabilidade ---------- */
+/* ---------- estabilidade: Ana, Bruno e Carla ---------- */
 (function(){
-  var MODES={
-    num:{a:'4 (a)',b:'4 (b)',s:'2',tie:'São iguais, e o algoritmo não distingue os dois.',end:'A ordem invertida fica para sempre.'},
-    alu:{a:'Ana 7',b:'Bruno 7',s:'Carla 5',tie:'Têm a mesma nota (7): empate. O algoritmo só olha a nota, não o nome.',end:'A lista estava em ordem alfabética, e a ordem entre Ana e Bruno se perdeu.'}
-  };
-  var mode='num',F=[];
-  function build(){
-    var m=MODES[mode];
-    F=[
-      {c:[m.a,m.b,m.s],mk:['i / menor','',''],cls:['cmp','',''],t:'<b>Rodada i = 0.</b> Vamos procurar o menor da lista inteira. Por enquanto o menor é <b>'+m.a+'</b>, na posição 0.'},
-      {c:[m.a,m.b,m.s],mk:['i','j',''],cls:['','cmp',''],t:'<b>j = 1:</b> <b>'+m.b+'</b> é menor que <b>'+m.a+'</b>? <b>Não.</b> '+m.tie+' O menor continua na posição 0.'},
-      {c:[m.a,m.b,m.s],mk:['i','','menor'],cls:['','','hot'],t:'<b>j = 2:</b> <b>'+m.s+'</b> é menor? <b>Sim.</b> O menor agora está na posição 2, longe da posição i = 0.'},
-      {c:[m.s,m.b,m.a],mk:['','',''],cls:['fin','','hot'],t:'<b>Troca:</b> '+m.s+' vai para a posição 0 e <b>'+m.a+'</b> é mandado para a posição 2. No caminho, ele <b>pulou por cima de '+m.b+'</b>. Antes: '+m.a+' vinha antes de '+m.b+'. Agora: '+m.b+' vem antes de '+m.a+'.'},
-      {c:[m.s,m.b,m.a],mk:['','',''],cls:['fin','fin','fin'],t:'<b>Fim.</b> Nas próximas rodadas '+m.b+' e '+m.a+' são comparados, mas empatam, então ninguém troca. '+m.end+' Por isso o Selection Sort é <b>instável</b>.'}
-    ];
-  }
-  build();
-  var k=0,cells=$('#cCells'),txt=$('#cText'),cnt=$('#cCnt'),pv=$('#cPrev'),nx=$('#cNext');
-  function render(){
-    var f=F[k];
-    cells.innerHTML=f.c.map(function(v,n){
-      return '<div class="cell '+f.cls[n]+'"><div class="mk">'+f.mk[n]+'</div><div class="box'+(v===MODES[mode].b?' alt':'')+'">'+v+'</div><div class="pos">posição '+n+'</div></div>';
-    }).join('');
-    txt.innerHTML=f.t;cnt.textContent='Passo '+(k+1)+' de '+F.length;
-    pv.disabled=k===0;nx.textContent=k===F.length-1?'Recomeçar':'Próximo';
-  }
-  pv.addEventListener('click',function(){if(k>0){k--;render();}});
-  nx.addEventListener('click',function(){k=k===F.length-1?0:k+1;render();});
-  [].slice.call(document.querySelectorAll('.cmode')).forEach(function(bt){
-    bt.addEventListener('click',function(){
-      mode=bt.dataset.mode;k=0;build();
-      [].slice.call(document.querySelectorAll('.cmode')).forEach(function(x){x.setAttribute('aria-selected',x===bt?'true':'false');});
-      render();
-    });
+  var P={Ana:{v:7},Bruno:{v:7,alt:1},Carla:{v:5}};
+  var STEPS=[
+    {ord:['Ana','Bruno','Carla'],cls:{},cap:'Ana e Bruno empatam: os dois têm nota 7.'},
+    {ord:['Ana','Bruno','Carla'],cls:{Carla:'min'},cap:'O menor é a Carla (nota 5).'},
+    {ord:['Carla','Bruno','Ana'],cls:{Carla:'ok',Ana:'hot'},hop:'Ana',cap:'Troca: a Carla vai para a frente e a Ana vai para o lugar dela, pulando por cima do Bruno.'},
+    {ord:['Carla','Bruno','Ana'],cls:{Carla:'ok',Ana:'hot',Bruno:'hot'},cap:'Pronto. Agora o Bruno está antes da Ana.',bad:true}
+  ];
+  var stage=$('#sdStage'),cap=$('#sdCap'),ideal=$('#sdIdeal'),vd=$('#sdVerdict'),cnt=$('#sdCnt'),pv=$('#sdPrev'),nx=$('#sdNext'),k=0,chips={};
+  Object.keys(P).forEach(function(n){
+    var d=h('div','sd-chip');d.innerHTML='<div class="in'+(P[n].alt?' alt':'')+'"><span>'+n+'</span><b>'+P[n].v+'</b></div>';stage.appendChild(d);chips[n]=d;
   });
+  $('#sdIdealRow').innerHTML=['Carla','Ana','Bruno'].map(function(n){return '<span class="tk'+(P[n].alt?' alt':'')+'">'+n+' '+P[n].v+'</span>';}).join('');
+  function render(){
+    var st=STEPS[k];
+    st.ord.forEach(function(n,pos){chips[n].style.left=(pos*33.33+1)+'%';});
+    Object.keys(chips).forEach(function(n){
+      chips[n].firstChild.className='in'+(P[n].alt?' alt':'')+(st.cls[n]?' '+st.cls[n]:'');
+    });
+    if(st.hop&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var inn=chips[st.hop].firstChild;inn.classList.remove('hop');void inn.offsetWidth;inn.classList.add('hop');}
+    cap.textContent=st.cap;
+    ideal.classList.toggle('show',!!st.bad);
+    vd.hidden=!st.bad;vd.className='verdict'+(st.bad?' bad':'');
+    if(st.bad)vd.textContent='Ana e Bruno empataram, mas trocaram de ordem. Por isso o Selection Sort é instável.';
+    cnt.textContent='Passo '+(k+1)+' de '+STEPS.length;
+    pv.disabled=k===0;nx.textContent=k===STEPS.length-1?'Recomeçar':'Próximo';
+    if(k===2)prof('Olha só! A Ana pulou por cima do Bruno.',{anim:'shake',priority:3,gap:2500});
+  }
+  pv.addEventListener('click',function(){if(k>0){k--;render();act('stab');}});
+  nx.addEventListener('click',function(){k=k===STEPS.length-1?0:k+1;render();act('stab');});
   render();
 })();
 
