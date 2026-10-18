@@ -434,6 +434,24 @@ td{border-bottom:1px solid var(--surface2)}
 @media (max-width:520px){.dv-row{font-size:1.15rem}.dv-end{font-size:1.6rem}}
 .hero-meta.alunos{margin-top:-14px;gap:6px}
 @media (min-width:1000px){.hero-meta.alunos{flex-wrap:nowrap}.hero-meta.alunos .pill{white-space:nowrap;font-size:.78rem;padding-inline:11px}}
+
+/* custo simplificado */
+.cost1{padding:22px;margin-top:0}
+.cost-main{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:28px;align-items:center;margin-top:16px}
+.tri{display:grid;gap:3px;width:100%;max-width:320px}
+.tri i{aspect-ratio:1;border-radius:3px;background:var(--surface2);opacity:.55;animation:triIn .35s both}
+.tri i.c{background:var(--done);opacity:1}
+.tri i.d{background:var(--idle);opacity:.7}
+@keyframes triIn{from{transform:scale(.3);opacity:0}}
+.tri-leg{margin:12px 0 0}
+.bigs{display:grid;gap:12px}
+.big{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"b s" "b t";column-gap:16px;align-items:center;padding:12px 18px;border-radius:16px;background:var(--bg)}
+.big b{grid-area:b;font:700 2.6rem/1 var(--display);min-width:2.4ch;font-variant-numeric:tabular-nums}
+.big small{grid-area:s;font:600 1rem var(--mono);color:var(--muted)}
+.big span{grid-area:t;font-size:.95rem;color:var(--muted)}
+.big.hot{box-shadow:inset 0 0 0 3px var(--done)}
+.big.hot b{color:var(--done)}
+@media (max-width:700px){.cost-main{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <header class="top">
@@ -456,7 +474,7 @@ td{border-bottom:1px solid var(--surface2)}
   <div>
     <p class="eyebrow">Seminário em grupo · Algoritmos de Ordenação</p>
     <h1>Selection Sort</h1>
-    <p class="lead">Ordenação por seleção</p>
+    <p class="lead">Em cada rodada, pega o menor número e coloca no lugar certo.</p>
     <div class="hero-meta">
       <span class="pill">Estruturas de Dados para Ciência de Dados</span>
       <span class="pill">Prof. Vitor Hugo da Silva Lopes</span>
@@ -480,9 +498,9 @@ td{border-bottom:1px solid var(--surface2)}
     <h2>A ideia</h2>
   </div>
   <div class="steps3">
-    <div class="card step3"><div class="n">1</div><h3>Procurar</h3></div>
-    <div class="card step3"><div class="n">2</div><h3>Trocar</h3></div>
-    <div class="card step3"><div class="n">3</div><h3>Repetir</h3></div>
+    <div class="card step3"><div class="n">1</div><h3>Procurar</h3><p>Ache o menor número da lista.</p></div>
+    <div class="card step3"><div class="n">2</div><h3>Trocar</h3><p>Coloque ele na primeira posição.</p></div>
+    <div class="card step3"><div class="n">3</div><h3>Repetir</h3><p>Faça de novo com o que sobrou.</p></div>
   </div>
 </section>
 
@@ -498,7 +516,7 @@ td{border-bottom:1px solid var(--surface2)}
       <span class="chip">trocas <b id="mSwaps">0</b></span>
       <span class="chip">erros <b id="mErr">0</b></span>
       <button type="button" class="btn" id="mHint">Dica</button>
-      <button type="button" class="btn ghost" id="mNew">Novo vetor aleatório</button>
+      <button type="button" class="btn ghost" id="mNew">Nova lista aleatória</button>
     </div>
     <form class="arrform" id="mForm" autocomplete="off">
       <label class="sr" for="mIn">Sua lista de números, separados por vírgula</label>
@@ -515,7 +533,7 @@ td{border-bottom:1px solid var(--surface2)}
   </div>
   <div class="card pad" id="simStart">
     <form class="arrform" id="arrForm" autocomplete="off">
-      <label class="sr" for="arrIn">Valores do vetor, separados por vírgula</label>
+      <label class="sr" for="arrIn">Valores do lista, separados por vírgula</label>
       <input type="text" id="arrIn" placeholder="Ex.: 64, 25, 12, 22, 11" inputmode="numeric">
       <button type="submit" class="btn primary" id="arrApply">Mostrar passo a passo</button>
     </form>
@@ -533,7 +551,7 @@ td{border-bottom:1px solid var(--surface2)}
     <div class="sim-grid">
       <div class="card pad">
         <div class="stats">
-          <div class="stat"><small>Passada</small><b id="cPass">0</b></div>
+          <div class="stat"><small>Rodada</small><b id="cPass">0</b></div>
           <div class="stat"><small>Comparações</small><b id="cComp">0</b></div>
           <div class="stat"><small>Trocas</small><b id="cSwap">0</b></div>
           <div class="stat"><small>No lugar</small><b id="cDone">0</b></div>
@@ -562,51 +580,34 @@ td{border-bottom:1px solid var(--surface2)}
   <div class="sec-head">
     <h2>Quanto custa ordenar?</h2>
   </div>
-  <div class="cost-grid">
-    <div class="card pad">
-      <div class="nrow">
-        <label for="nRange">Tamanho do vetor</label>
-        <output id="nOut" for="nRange">10</output>
-        <input type="range" id="nRange" min="2" max="40" value="10">
+  <div class="card cost1">
+    <h3>1. Contar as comparações</h3>
+    <div class="nrow">
+      <label for="nRange">Tamanho da lista (n)</label>
+      <output id="nOut" for="nRange">6</output>
+      <input type="range" id="nRange" min="2" max="20" value="6">
+    </div>
+    <div class="cost-main">
+      <div>
+        <div class="tri" id="tri" aria-label="Quadrado n por n: as comparações são a metade abaixo da diagonal"></div>
+        <div class="legend tri-leg"><span><i style="background:var(--done)"></i>comparação</span><span><i style="background:var(--idle)"></i>diagonal</span><span><i style="background:var(--surface2)"></i>não conta</span></div>
       </div>
-      <div class="formula">
-        Comparações: <code>n(n−1)/2 = <b id="fComp">45</b></code><br>
-        Trocas: no máximo <code>n−1 = <b id="fSwap">9</b></code>
+      <div class="bigs">
+        <div class="big"><small>n × n</small><b id="sqN">36</b><span>quadrados no total</span></div>
+        <div class="big hot"><small>n(n−1)/2</small><b id="cmpN">15</b><span>comparações</span></div>
+        <div class="big"><small>n − 1</small><b id="swN">5</b><span>trocas, no máximo</span></div>
       </div>
-      <div class="scn" id="scn"></div>
-      <button type="button" class="btn" id="reroll">Sortear outro vetor aleatório</button>
-    </div>
-    <div class="card pad">
-      <div class="chartbox"><svg id="chart" viewBox="0 0 640 330" role="img" aria-label="Gráfico: crescimento de n, n log n e n(n−1)/2 para n de 1 a 40"></svg></div>
-    </div>
-  </div>
-  <div class="card stair" id="stair">
-    <h3>De onde vem o n(n−1)/2</h3>
-    <div class="stair-top">
-      <label for="sN">Tamanho</label>
-      <input type="range" id="sN" min="3" max="12" value="7">
-      <output id="sNo" for="sN">7</output>
-      <button type="button" class="btn primary" id="sNext">Próxima rodada</button>
-      <button type="button" class="btn ghost" id="sAll">Mostrar tudo</button>
-      <button type="button" class="btn ghost" id="sReset">Reiniciar</button>
-    </div>
-    <div class="stair-rows" id="sRows" aria-live="polite"></div>
-    <div class="stair-tot" id="sTot"></div>
-    <div class="dbl">
-      <div>n = 10<b>45 comparações</b></div>
-      <div>n = 20<b>190 comparações</b></div>
-      <div>n = 40<b>780 comparações</b></div>
     </div>
   </div>
   <div class="card derive" id="derive">
-    <h3>Do n(n−1)/2 ao O(n²)</h3>
+    <h3>2. De n(n−1)/2 até n²</h3>
     <div class="dv-rows" id="dvRows">
       <div class="dv-row" data-s="0"><span class="dv-f">1 + 2 + 3 + … + (n−1)</span></div>
       <div class="dv-row" data-s="1"><span class="dv-f"><span class="dv-ex">exemplo n = 5</span> 1 + 2 + 3 + 4 = <span class="pr">(1 + 4)</span> + <span class="pr">(2 + 3)</span> = <b>5</b> + <b>5</b></span><span class="dv-tag">cada par = 5 = n</span></div>
       <div class="dv-row" data-s="2"><span class="dv-f"><span class="pr">(1 + (n−1))</span> + <span class="pr">(2 + (n−2))</span> + … = <b>n</b> + <b>n</b> + …</span><span class="dv-tag">todo par soma n</span></div>
       <div class="dv-row" data-s="3"><span class="dv-f">= n × <span class="fr"><span>(n−1)</span><span>2</span></span></span><span class="dv-tag">(n−1)/2 pares de valor n</span></div>
       <div class="dv-row" data-s="4"><span class="dv-f">= <span class="dvA"><span class="fr"><span>n²</span><span class="dvh">2</span></span></span> <span class="dvB">− <span class="fr"><span>n</span><span>2</span></span></span></span></div>
-      <div class="dv-row dv-end" data-s="7"><span class="dv-f">= O(n²)</span></div>
+      <div class="dv-row dv-end" data-s="7"><span class="dv-f">= n² &nbsp;→&nbsp; O(n²)</span><span class="dv-tag">lista 2× maior = 4× mais trabalho</span></div>
     </div>
     <div class="dv-cap" id="dvCap" aria-live="polite"></div>
     <div class="stair-top">
@@ -616,18 +617,22 @@ td{border-bottom:1px solid var(--surface2)}
       <span class="chip" id="dvCnt">0 / 7</span>
     </div>
   </div>
+  <div class="card pad cost3" style="margin-top:18px">
+    <h3 style="margin-bottom:10px">3. Como o trabalho cresce</h3>
+    <div class="chartbox"><svg id="chart" viewBox="0 0 640 330" role="img" aria-label="Gráfico: crescimento de n e de n(n−1)/2 para n de 1 a 40"></svg></div>
+  </div>
   <div class="facts">
-    <div class="card fact"><b>O(n²)</b><span>Tempo</span></div>
-    <div class="card fact"><b>O(1)</b><span>Memória extra</span></div>
-    <div class="card fact"><b>≤ n−1</b><span>Trocas</span></div>
-    <div class="card fact"><b>Não</b><span>Adaptativo</span></div>
-    <div class="card fact"><b>Não</b><span>Estável</span></div>
+    <div class="card fact"><b>O(n²)</b><span>Tempo: cresce ao quadrado</span></div>
+    <div class="card fact"><b>Quase 0</b><span>Memória extra</span></div>
+    <div class="card fact"><b>≤ n−1</b><span>Trocas: poucas</span></div>
+    <div class="card fact"><b>Não</b><span>Fica mais rápido se a lista já está ordenada?</span></div>
+    <div class="card fact"><b>Não</b><span>Mantém a ordem de quem empata?</span></div>
   </div>
 </section>
 
 <section class="wrap sec" id="estabilidade">
   <div class="sec-head">
-    <h2>Por que ele é instável?</h2>
+    <h2>Ele mantém a ordem de quem empata?</h2>
   </div>
   <div class="stab-grid">
     <div class="card pad" id="stabPlayer"></div>
@@ -656,22 +661,15 @@ td{border-bottom:1px solid var(--surface2)}
       </div>
     </div>
   </div>
-  <div class="why" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+  <div class="why" style="grid-template-columns:minmax(0,1fr)">
     <div class="card">
-      <h3>1. Estável vs. Selection Sort</h3>
+      <h3>Ordem de quem empata</h3>
       <p class="lab">Antes</p>
       <div class="order"><span class="tk">Ana 7</span><span class="tk alt">Bruno 7</span><span class="tk">Carla 5</span></div>
-      <p class="lab">Resultado estável</p>
+      <p class="lab">Como deveria ficar (mantém a ordem)</p>
       <div class="order"><span class="tk">Carla 5</span><span class="tk">Ana 7</span><span class="tk alt">Bruno 7</span></div>
-      <p class="lab">Resultado do Selection Sort</p>
+      <p class="lab">Como o Selection Sort deixa</p>
       <div class="order"><span class="tk">Carla 5</span><span class="tk alt">Bruno 7</span><span class="tk">Ana 7</span></div>
-    </div>
-    <div class="card">
-      <h3>2. Com troca vs. com deslocamento</h3>
-      <p class="lab">Com troca (Selection Sort)</p>
-      <div class="order"><span class="tk">4 (a)</span><span class="tk alt">4 (b)</span><span class="tk">2</span><span>→</span><span class="tk">2</span><span class="tk alt">4 (b)</span><span class="tk">4 (a)</span></div>
-      <p class="lab">Com deslocamento (estável)</p>
-      <div class="order"><span class="tk">4 (a)</span><span class="tk alt">4 (b)</span><span class="tk">2</span><span>→</span><span class="tk">2</span><span class="tk">4 (a)</span><span class="tk alt">4 (b)</span></div>
     </div>
   </div>
 </section>
@@ -782,11 +780,11 @@ function trace(items){
     if(extra){for(var k in extra){s[k]=extra[k];}}
     steps.push(s);
   }
-  snap('init','Vetor inicial com '+n+' elementos. Nenhum deles está garantido no lugar ainda.');
+  snap('init','Lista inicial com '+n+' elementos. Nenhum deles está garantido no lugar ainda.');
   for(var i=0;i<n-1;i++){
     pass=i+1;var m=i;
     var intro=i===0?'Ainda não há parte ordenada.':(i===1?'A primeira posição já está correta.':'As '+i+' primeiras posições já estão corretas.');
-    snap('outer','Passada '+pass+'. '+intro+' Vamos achar o menor valor entre as posições '+i+' e '+(n-1)+'.',{i:i});
+    snap('outer','Rodada '+pass+'. '+intro+' Vamos achar o menor valor entre as posições '+i+' e '+(n-1)+'.',{i:i});
     snap('setmin','Ponto de partida: o menor até agora é '+nm(a[m])+', na posição '+m+'.',{i:i,min:m});
     for(var j=i+1;j<n;j++){
       comps++;
@@ -1102,23 +1100,18 @@ renderCode();
 
 /* ---------- custo ---------- */
 (function(){
-  var nR=$('#nRange'),nO=$('#nOut'),scn=$('#scn');
-  var rnd=null;
-  function seq(n,rev){var a=[];for(var k=1;k<=n;k++)a.push(k);return rev?a.reverse():a;}
+  var nR=$('#nRange'),nO=$('#nOut'),tri=$('#tri');
   function render(){
-    var n=+nR.value;nO.textContent=n;
-    var maxC=n*(n-1)/2,maxS=n-1;
-    $('#fComp').textContent=maxC;$('#fSwap').textContent=maxS;
-    if(!rnd||rnd.length!==n)rnd=shuffle(seq(n));
-    var rows=[['Já ordenado',seq(n)],['Invertido',seq(n,true)],['Aleatório',rnd]];
-    var html='<span class="hd">Cenário</span><span class="hd">Comparações</span><span class="hd">Trocas</span>';
-    rows.forEach(function(r){
-      var o=countOps(r[1]);
-      html+='<span class="nm">'+r[0]+'</span>'+
-        '<div class="meter c"><span style="width:'+(maxC?o.c/maxC*100:0)+'%"></span><b>'+o.c+'</b></div>'+
-        '<div class="meter s"><span style="width:'+(maxS?o.s/maxS*100:0)+'%"></span><b>'+o.s+'</b></div>';
-    });
-    scn.innerHTML=html;
+    var n=+nR.value,cmp=n*(n-1)/2;
+    nO.textContent=n;
+    $('#sqN').textContent=n*n;$('#cmpN').textContent=cmp;$('#swN').textContent=n-1;
+    var h='';
+    for(var r=0;r<n;r++)for(var c=0;c<n;c++){
+      var cls=c<r?'c':(c===r?'d':'');
+      h+='<i class="'+cls+'" style="animation-delay:'+((r*n+c)*3)+'ms"></i>';
+    }
+    tri.style.gridTemplateColumns='repeat('+n+',1fr)';
+    tri.innerHTML=h;
     drawChart(n);
   }
   function drawChart(n){
@@ -1130,12 +1123,10 @@ renderCode();
     [0,200,400,600,800].forEach(function(v){s+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text class="ct" x="'+(L-8)+'" y="'+(Y(v)+5)+'" text-anchor="end">'+v+'</text>';});
     [0,10,20,30,40].forEach(function(v){s+='<text class="ct" x="'+X(v)+'" y="'+(H-B+22)+'" text-anchor="middle">'+v+'</text>';});
     s+='<line class="ax" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/>';
-    s+='<text class="ct" x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle">n (tamanho do vetor)</text>';
+    s+='<text class="ct" x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle">n (tamanho do lista)</text>';
     s+='<path d="'+path(function(k){return k;})+'" fill="none" stroke="var(--idle)" stroke-width="3"/>';
-    s+='<path d="'+path(function(k){return k*Math.log2(k);})+'" fill="none" stroke="var(--scan)" stroke-width="3"/>';
     s+='<path d="'+path(function(k){return k*(k-1)/2;})+'" fill="none" stroke="var(--hot)" stroke-width="4"/>';
     s+='<text class="ct" x="'+(X(40)+8)+'" y="'+(Y(40)+5)+'">n</text>';
-    s+='<text class="ct" x="'+(X(40)+8)+'" y="'+(Y(40*Math.log2(40))+5)+'" style="fill:var(--scan)">n log₂ n</text>';
     s+='<text class="ctb" x="'+(X(40)+8)+'" y="'+(Y(780)+5)+'">n(n−1)/2</text>';
     var cv=n*(n-1)/2;
     s+='<line x1="'+X(n)+'" x2="'+X(n)+'" y1="'+Y(0)+'" y2="'+Y(cv)+'" stroke="var(--ink)" stroke-dasharray="4 4" stroke-width="1.5"/>';
@@ -1146,40 +1137,13 @@ renderCode();
   }
   nR.addEventListener('input',function(){render();act('cost');});
   nR.addEventListener('change',function(){var n=+nR.value;prof('Com n = '+n+' são '+(n*(n-1)/2)+' comparações. Sempre.',{anim:'nod',priority:3});});
-  $('#reroll').addEventListener('click',function(){rnd=null;render();act('cost');});
   render();
-})();
-
-/* ---------- escada de comparações ---------- */
-(function(){
-  var rows=$('#sRows'),tot=$('#sTot'),rng=$('#sN'),out=$('#sNo'),nx=$('#sNext'),k=0;
-  function n(){return +rng.value;}
-  function build(){
-    var N=n(),h='';
-    for(var r=1;r<=N-1;r++){
-      var c=N-r,sq='';for(var q=0;q<c;q++)sq+='<i class="sq" style="transition-delay:'+(q*30)+'ms"></i>';
-      h+='<div class="srow" data-r="'+r+'"><span class="rl">Rodada '+r+'</span><span class="cells2">'+sq+'</span><span class="cnt2">'+c+' comp.</span></div>';
-    }
-    rows.innerHTML=h;k=0;out.textContent=N;upd();
-  }
-  function upd(){
-    var N=n(),sum=0;
-    [].slice.call(rows.children).forEach(function(el,i){var on=i<k;el.classList.toggle('on',on);if(on)sum+=N-1-i;});
-    var all=N*(N-1)/2;
-    tot.textContent='Total até agora: '+sum+' de '+all+' comparações';
-    nx.disabled=k>=N-1;
-  }
-  nx.addEventListener('click',function(){if(k<n()-1){k++;upd();}});
-  $('#sAll').addEventListener('click',function(){k=n()-1;upd();});
-  $('#sReset').addEventListener('click',function(){k=0;upd();});
-  rng.addEventListener('input',build);
-  build();
 })();
 
 /* ---------- derivação até O(n²) ---------- */
 (function(){
   var rows=$$('#dvRows .dv-row'),cap=$('#dvCap'),cnt=$('#dvCnt'),nx=$('#dvNext'),pv=$('#dvPrev'),k=0;
-  var CAP=['Ponto de partida: a soma de todas as comparações','Exemplo com n = 5: junta o 1º com o último e o 2º com o penúltimo','Em geral: 1 + (n−1) = n, 2 + (n−2) = n… todo par soma n','São (n−1)/2 pares, e cada par vale n','Abre a conta','Corta o termo menor: n/2 cresce menos que n²','Corta a constante: o 1/2 não conta no Big-O','Sobra O(n²)'];
+  var CAP=['Ponto de partida: a soma de todas as comparações','Exemplo com n = 5: junta o 1º com o último e o 2º com o penúltimo','Em geral: 1 + (n−1) = n, 2 + (n−2) = n… todo par soma n','São (n−1)/2 pares, e cada par vale n','Abre a multiplicação: n × (n−1) vira n² − n','Lista grande: o n² pesa muito mais que o n/2. Corta o n/2','O ÷2 é só um número fixo e não muda a forma da curva. Corta também','Sobra n². Esse é o O(n²)'];
   function upd(){
     rows.forEach(function(r){r.classList.toggle('on',k>=+r.getAttribute('data-s'));});
     var b=$('#derive .dvB'),hf=$('#derive .dvh');
@@ -1203,7 +1167,7 @@ renderCode();
     var inv=pl.items[fours[0]].tag==='b';
     ord.innerHTML='<span>Ordem dos dois 4:</span>'+fours.map(function(id){var t=pl.items[id].tag;return '<span class="tk'+(t==='b'?' alt':'')+'">4 ('+t+')</span>';}).join('<span>→</span>');
     if(s.tag==='done'||s.sorted.length>=1){
-      if(inv){if(s.tag==='swap'&&s.hot)prof('Olha só! O 4 (a) passou por cima do 4 (b). Instável!',{anim:'shake',priority:3,target:'#stabPlayer'});ver.className='verdict bad';ver.textContent='Os dois 4 trocaram de ordem. Um algoritmo estável manteria 4 (a) antes de 4 (b).';}
+      if(inv){if(s.tag==='swap'&&s.hot)prof('Olha só! O 4 (a) passou por cima do 4 (b). Ordem trocada!',{anim:'shake',priority:3,target:'#stabPlayer'});ver.className='verdict bad';ver.textContent='Os dois 4 trocaram de ordem. Um algoritmo estável manteria 4 (a) antes de 4 (b).';}
       else{ver.className='verdict ok';ver.textContent='Por enquanto os dois 4 estão na ordem original.';}
     }else{ver.className='verdict ok';ver.textContent='Dê o primeiro passo da troca e observe os dois 4.';}
   }});
@@ -1665,7 +1629,7 @@ var RULES=[
   ['#main-next',['Um passo de cada vez. Assim que se aprende.'],'nod'],
   ['#manualViz .col',['Vai clicar nessa? Tem certeza?','Hum... será que é o menor?'],'wiggle'],
   ['.stage .col',['Hum, olhando as barras, hein?','Interessante... qual será o menor?','Estou vendo você de olho nessa barra.'],'wiggle'],
-  ['.code',['Código! Hum, dois laços aninhados.','O for de dentro é quem procura o menor.','Interessante... leia com calma.'],'nod'],
+  ['.code',['Código! Hum, um laço dentro de outro.','O for de dentro é quem procura o menor.','Interessante... leia com calma.'],'nod'],
   ['input[type=text]',['Digitando uma lista? Quero ver.','Cuidado com número repetido, hein.'],'wiggle'],
   ['.stat',['Comparações e trocas... é isso que mede o custo.'],'nod'],
   ['#chart',['O(n²)... a curva vermelha sobe rápido, hein.'],'nod'],
@@ -1694,7 +1658,7 @@ var SEC=[
   ['ideia','#ideia .steps3','A fila de alunos... clássico. Estou vendo aqui.'],
   ['jogo','#jogo .manual-wrap','Agora é com você. Quero ver achar o menor.'],
   ['simulador','#simStart','Hum, o passo a passo. Digite uma lista aí.'],
-  ['custo','#custo .cost-grid','O(n²)... isso pesa em vetor grande.'],
+  ['custo','#custo .cost-grid','O(n²)... isso pesa em lista grande.'],
   ['estabilidade','#estabilidade .stab-grid','Instável? Hum, quero ver explicar isso.'],
   ['final','#final .finale','Olha o if ali... cuidado com o que clicar.']
 ];
