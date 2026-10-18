@@ -432,7 +432,7 @@ td{border-bottom:1px solid var(--surface2)}
   <div>
     <p class="eyebrow">Seminário em grupo · Algoritmos de Ordenação</p>
     <h1>Selection Sort</h1>
-    <p class="lead">Ordenação por seleção. A cada passada, o menor elemento que sobrou vai para o seu lugar definitivo.</p>
+    <p class="lead">Ordenação por seleção</p>
     <div class="hero-meta">
       <span class="pill">Apresentação dia 19</span>
       <span class="pill">Estruturas de Dados para Ciência de Dados</span>
@@ -452,24 +452,19 @@ td{border-bottom:1px solid var(--surface2)}
 
 <section class="wrap sec" id="ideia">
   <div class="sec-head">
-    <h2>A ideia em uma fila de alunos</h2>
-    <p class="lead">Uma fila precisa ficar do mais baixo ao mais alto. Você olha a fila inteira, acha o aluno mais baixo e troca de lugar com quem está na primeira posição. Depois esquece a primeira posição e repete com o resto da fila.</p>
+    <h2>A ideia</h2>
   </div>
   <div class="steps3">
-    <div class="card step3"><div class="n">1</div><h3>Procurar</h3><p>Percorra a parte não ordenada e descubra onde está o menor valor. Guarde só a posição dele, numa variável chamada <code>menor</code>.</p></div>
-    <div class="card step3"><div class="n">2</div><h3>Trocar</h3><p>Troque o menor valor com o elemento da primeira posição da parte não ordenada. Agora essa posição está correta para sempre.</p></div>
-    <div class="card step3"><div class="n">3</div><h3>Repetir</h3><p>A parte ordenada cresceu um elemento. Repita com o que sobrou, até restar um único elemento, que já está no lugar certo.</p></div>
-  </div>
-  <div class="card invariant">
-    <b>Regra que se mantém</b>
-    <span>Depois de <i>k</i> passadas, as <i>k</i> primeiras posições têm os <i>k</i> menores valores, já na ordem final.</span>
+    <div class="card step3"><div class="n">1</div><h3>Procurar</h3></div>
+    <div class="card step3"><div class="n">2</div><h3>Trocar</h3></div>
+    <div class="card step3"><div class="n">3</div><h3>Repetir</h3></div>
   </div>
 </section>
 
 <section class="wrap sec" id="jogo">
   <div class="sec-head">
     <h2>Agora você é o algoritmo</h2>
-    <p class="lead">Clique na barra de menor valor entre as barras que ainda não estão verdes. O algoritmo faz a mesma busca, só que comparando um valor de cada vez. Você pode jogar com a sua própria lista.</p>
+    <p class="lead">Clique na barra de menor valor.</p>
   </div>
   <div class="card manual-wrap">
     <div id="manualViz"></div>
@@ -492,7 +487,6 @@ td{border-bottom:1px solid var(--surface2)}
 <section class="wrap sec" id="simulador">
   <div class="sec-head">
     <h2>Passo a passo com o código</h2>
-    <p class="lead">Digite a lista que você quer ordenar. Em seguida aparece a animação, e cada passo acende a linha do código que está sendo executada.</p>
   </div>
   <div class="card pad" id="simStart">
     <form class="arrform" id="arrForm" autocomplete="off">
@@ -542,16 +536,6 @@ td{border-bottom:1px solid var(--surface2)}
 <section class="wrap sec" id="custo">
   <div class="sec-head">
     <h2>Quanto custa ordenar?</h2>
-    <p class="lead">O Selection Sort sempre procura o menor em toda a parte que sobrou, mesmo que o vetor já esteja ordenado. Por isso o número de comparações não depende da ordem dos dados. Mexa no tamanho e veja.</p>
-  </div>
-  <div class="card cost-sum">
-    <h3>Em palavras simples</h3>
-    <ol>
-      <li>“Custo” aqui é quantas <b>comparações</b> o algoritmo faz, porque é isso que toma tempo.</li>
-      <li>Na 1ª rodada ele olha todos os itens menos um: <b>n−1</b> comparações. Na 2ª, olha um item a menos: <b>n−2</b>. E assim por diante, até <b>1</b>.</li>
-      <li>Somar tudo dá <b>(n−1) + (n−2) + … + 1 = n(n−1)/2</b>. Isso cresce mais ou menos como <b>n²</b>, por isso se escreve <b>O(n²)</b>.</li>
-      <li>Na prática: <b>dobrar o tamanho da lista quadruplica o trabalho</b>. E o custo é o mesmo mesmo que a lista já esteja ordenada, porque ele sempre varre tudo o que sobrou.</li>
-    </ol>
   </div>
   <div class="cost-grid">
     <div class="card pad">
@@ -566,74 +550,40 @@ td{border-bottom:1px solid var(--surface2)}
       </div>
       <div class="scn" id="scn"></div>
       <button type="button" class="btn" id="reroll">Sortear outro vetor aleatório</button>
-      <p class="note">Os números acima vêm da execução real do algoritmo em cada vetor.</p>
     </div>
     <div class="card pad">
       <div class="chartbox"><svg id="chart" viewBox="0 0 640 330" role="img" aria-label="Gráfico: crescimento de n, n log n e n(n−1)/2 para n de 1 a 40"></svg></div>
-      <p class="note">Tempo O(n²): dobrar o tamanho do vetor quadruplica o trabalho. A curva de n log₂ n é a do Merge Sort e do Quick Sort no caso médio.</p>
-    </div>
-  </div>
-  <div class="card stair" id="stair">
-    <h3>De onde vem o n(n−1)/2</h3>
-    <p>Cada linha é uma rodada, e cada quadradinho é uma comparação. Clique em “Próxima rodada” e veja a escada se formar.</p>
-    <div class="stair-top">
-      <label for="sN">Tamanho</label>
-      <input type="range" id="sN" min="3" max="12" value="7">
-      <output id="sNo" for="sN">7</output>
-      <button type="button" class="btn primary" id="sNext">Próxima rodada</button>
-      <button type="button" class="btn ghost" id="sAll">Mostrar tudo</button>
-      <button type="button" class="btn ghost" id="sReset">Reiniciar</button>
-    </div>
-    <div class="stair-rows" id="sRows" aria-live="polite"></div>
-    <div class="stair-tot" id="sTot"></div>
-    <div class="dbl">
-      <div>n = 10<b>45 comparações</b></div>
-      <div>n = 20 (o dobro)<b>190 comparações</b>quase 4 vezes mais</div>
-      <div>n = 40 (o dobro de novo)<b>780 comparações</b>quase 4 vezes mais</div>
     </div>
   </div>
   <div class="facts">
-    <div class="card fact"><b>O(n²)</b><span>Tempo no melhor, médio e pior caso. Não existe atalho para vetor ordenado.</span></div>
-    <div class="card fact"><b>O(1)</b><span>Memória extra. Ordena no próprio vetor (in-place), só com algumas variáveis.</span></div>
-    <div class="card fact"><b>≤ n−1</b><span>Trocas. Bom quando escrever na memória é caro, como em memória flash.</span></div>
-    <div class="card fact"><b>Não adaptativo</b><span>Não aproveita dados já ordenados. O Insertion Sort aproveita.</span></div>
-    <div class="card fact"><b>Instável</b><span>A troca de longa distância pode inverter a ordem de valores iguais. Veja abaixo.</span></div>
+    <div class="card fact"><b>O(n²)</b><span>Tempo</span></div>
+    <div class="card fact"><b>O(1)</b><span>Memória extra</span></div>
+    <div class="card fact"><b>≤ n−1</b><span>Trocas</span></div>
+    <div class="card fact"><b>Não</b><span>Adaptativo</span></div>
+    <div class="card fact"><b>Não</b><span>Estável</span></div>
   </div>
 </section>
 
 <section class="wrap sec" id="estabilidade">
   <div class="sec-head">
     <h2>Por que ele é instável?</h2>
-    <p class="lead">Um algoritmo é estável quando valores iguais saem na mesma ordem em que entraram. O Selection Sort não garante isso, e a causa está na troca.</p>
-  </div>
-  <div class="card cause" id="resumo" style="margin-bottom:18px">
-    <h3 style="margin-bottom:10px">Em palavras simples</h3>
-    <ol>
-      <li><b>Estável</b> quer dizer: quando dois itens empatam, quem estava na frente continua na frente depois de ordenar.</li>
-      <li>O Selection Sort procura o menor e o <b>troca de lugar</b> com o item da vez. Essa troca pode atravessar a lista inteira de uma vez.</li>
-      <li>Quem estava na vaga do menor é jogado lá para longe, e pode passar por cima de um item igual a ele. Aí os dois empatados <b>trocam de ordem</b>.</li>
-      <li>Como o algoritmo só compara valores, ele não sabe que aqueles dois já tinham uma ordem. Por isso <b>não conserta</b> depois.</li>
-    </ol>
-    <p class="note" style="margin-top:12px">Com números simples isso não faz diferença. Importa quando cada item carrega algo a mais, como o nome de um aluno.</p>
   </div>
   <div class="stab-grid">
     <div class="card pad" id="stabPlayer"></div>
     <div class="card defbox">
       <h3>Acompanhe os dois 4</h3>
-      <p>Os dois valores são iguais, então para a ordenação tanto faz qual vem primeiro. A diferença aparece quando cada um carrega uma informação própria, como o nome de um aluno.</p>
-      <p>A barra com listras é o segundo 4. Chame o primeiro de <b>4 (a)</b> e o segundo de <b>4 (b)</b>. Avance até a primeira troca e veja o que acontece com a ordem dos dois.</p>
+      <p>A barra listrada é o <b>4 (b)</b>.</p>
       <div class="order" id="stabOrder" aria-live="polite"></div>
       <div class="verdict" id="stabVerdict"></div>
     </div>
   </div>
   <div class="card cause" id="cause">
     <h3>A causa, passo a passo</h3>
-    <p class="key">A culpada é a troca à distância: ela joga o elemento que estava na posição i para o lugar do menor, e ele pula por cima de tudo o que havia no meio.</p>
     <div class="tabs" role="tablist" aria-label="Exemplo" style="margin-bottom:12px">
       <button type="button" class="tab cmode" role="tab" aria-selected="true" data-mode="num">Com números</button>
       <button type="button" class="tab cmode" role="tab" aria-selected="false" data-mode="alu">Com alunos</button>
     </div>
-    <div class="cause-grid">
+    <div class="cause-grid" style="grid-template-columns:minmax(0,1fr)">
       <div>
         <div class="cells" id="cCells" aria-live="polite"></div>
         <div class="cstep" id="cText"></div>
@@ -643,53 +593,31 @@ td{border-bottom:1px solid var(--surface2)}
           <span class="cnt" id="cCnt"></span>
         </div>
       </div>
-      <div>
-        <p class="lab" style="margin:0 0 8px;font:500 .72rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted)">Por que isso acontece</p>
-        <ol>
-          <li>O algoritmo compara só o <b>valor</b>. Para ele, os dois itens empatados são idênticos, não existe “quem veio primeiro”.</li>
-          <li>Ele só <b>troca</b> o menor com a posição i. Não existe nenhum passo que lembre ou restaure a ordem original.</li>
-          <li>A troca atravessa a lista de uma vez. Quanto mais longe está o menor, mais elementos o outro valor ultrapassa, e basta um deles ser igual para a ordem se perder.</li>
-          <li>Depois que os dois empatados se inverteram, as rodadas seguintes veem valores iguais e <b>não mexem mais</b>. Nada conserta o estrago.</li>
-        </ol>
-      </div>
     </div>
   </div>
-  <div class="why">
+  <div class="why" style="grid-template-columns:repeat(2,minmax(0,1fr))">
     <div class="card">
-      <h3>1. O que significa ser estável</h3>
-      <p>Imagine alunos que já estão em ordem alfabética e agora serão ordenados pela nota. Ana e Bruno tiraram a mesma nota.</p>
+      <h3>1. Estável vs. Selection Sort</h3>
       <p class="lab">Antes</p>
       <div class="order"><span class="tk">Ana 7</span><span class="tk alt">Bruno 7</span><span class="tk">Carla 5</span></div>
       <p class="lab">Resultado estável</p>
       <div class="order"><span class="tk">Carla 5</span><span class="tk">Ana 7</span><span class="tk alt">Bruno 7</span></div>
       <p class="lab">Resultado do Selection Sort</p>
       <div class="order"><span class="tk">Carla 5</span><span class="tk alt">Bruno 7</span><span class="tk">Ana 7</span></div>
-      <p>No resultado estável, Ana continua antes de Bruno. No do Selection Sort, a ordem alfabética se perdeu.</p>
     </div>
     <div class="card">
-      <h3>2. Onde a ordem se perde</h3>
-      <p>A troca leva o menor valor direto para a posição <code>i</code>. Quem estava na posição <code>i</code> é mandado para o lugar onde o menor estava, que pode ser bem longe.</p>
-      <p>No caminho, esse elemento pula por cima de todos os que estavam no meio, inclusive de outro valor igual a ele.</p>
-      <p>No exemplo ao lado, o 4 (a) estava na posição 0 e foi parar na posição 2. Ele passou por cima do 4 (b), e os dois inverteram de ordem.</p>
-      <p>Compare com o Insertion Sort, que só troca vizinhos e por isso nunca faz um valor pular por cima de um igual.</p>
-    </div>
-    <div class="card">
-      <h3>3. Como ficaria estável, e o preço</h3>
-      <p>Em vez de trocar, dá para encaixar o menor na posição <code>i</code> e empurrar uma casa para a direita todos os elementos que estavam entre as duas posições. Ninguém pula por cima de ninguém.</p>
+      <h3>2. Com troca vs. com deslocamento</h3>
       <p class="lab">Com troca (Selection Sort)</p>
       <div class="order"><span class="tk">4 (a)</span><span class="tk alt">4 (b)</span><span class="tk">2</span><span>→</span><span class="tk">2</span><span class="tk alt">4 (b)</span><span class="tk">4 (a)</span></div>
       <p class="lab">Com deslocamento (estável)</p>
       <div class="order"><span class="tk">4 (a)</span><span class="tk alt">4 (b)</span><span class="tk">2</span><span>→</span><span class="tk">2</span><span class="tk">4 (a)</span><span class="tk alt">4 (b)</span></div>
-      <p>O preço é que cada passada passa a mover vários elementos, e a vantagem de fazer no máximo n−1 trocas deixa de valer.</p>
     </div>
   </div>
-  <p class="note">Quando importa: ao ordenar por um critério depois de outro, como nome e depois nota. Em uma lista de números simples, ninguém percebe a diferença.</p>
 </section>
 
 <section class="wrap sec" id="final">
   <div class="sec-head">
     <h2>Última pergunta</h2>
-    <p class="lead">Para fechar, um teste feito em código.</p>
   </div>
   <div class="card finale">
     <pre class="code" id="joke" aria-label="Código da brincadeira"></pre>
@@ -1161,32 +1089,6 @@ renderCode();
   render();
 })();
 
-/* ---------- escada de comparações ---------- */
-(function(){
-  var rows=$('#sRows'),tot=$('#sTot'),rng=$('#sN'),out=$('#sNo'),nx=$('#sNext'),k=0;
-  function n(){return +rng.value;}
-  function build(){
-    var N=n(),h='';
-    for(var r=1;r<=N-1;r++){
-      var c=N-r,sq='';for(var q=0;q<c;q++)sq+='<i class="sq" style="transition-delay:'+(q*30)+'ms"></i>';
-      h+='<div class="srow" data-r="'+r+'"><span class="rl">Rodada '+r+'</span><span class="cells2">'+sq+'</span><span class="cnt2">'+c+' comp.</span></div>';
-    }
-    rows.innerHTML=h;k=0;out.textContent=N;upd();
-  }
-  function upd(){
-    var N=n(),sum=0;
-    [].slice.call(rows.children).forEach(function(el,i){var on=i<k;el.classList.toggle('on',on);if(on)sum+=N-1-i;});
-    var all=N*(N-1)/2;
-    tot.textContent=k===0?'Total: 0 de '+all+' comparações. Cada rodada tem um quadradinho a menos que a anterior.':(k>=N-1?'Total: '+all+' comparações = '+N+' × '+(N-1)+' ÷ 2. É metade de um quadrado de lado n, daí vem o n².':'Total até agora: '+sum+' de '+all+' comparações.');
-    nx.disabled=k>=N-1;
-  }
-  nx.addEventListener('click',function(){if(k<n()-1){k++;upd();}});
-  $('#sAll').addEventListener('click',function(){k=n()-1;upd();});
-  $('#sReset').addEventListener('click',function(){k=0;upd();});
-  rng.addEventListener('input',build);
-  build();
-})();
-
 /* ---------- estabilidade ---------- */
 (function(){
   var items=[{v:4,tag:'a'},{v:4,tag:'b'},{v:2}];
@@ -1291,7 +1193,7 @@ var rg={armL:$$('rgArmL'),armR:$$('rgArmR'),irisL:$$('rgIrisL'),irisR:$$('rgIris
   m:{patch:$$('mgPatch'),hmm:$$('mgHmm'),smile:$$('mgSmile'),o:$$('mgO'),sad:$$('mgSad'),talk:$$('mgTalk'),grit:$$('mgGrit')},strain:$$('rgStrain')};
 var MOODS={
   idle:{aL:-46,aR:46,wave:0,mouth:'smile',lid:[0,0],glyph:''},
-  curious:{aL:-46,aR:-6,wave:0,mouth:'hmm',lid:[0.42,0],glyph:'?'},
+  curious:{aL:-46,aR:-6,wave:0,mouth:'hmm',lid:[1,0],glyph:'?'},
   agree:{aL:-30,aR:30,wave:7,mouth:'smile',lid:[0,0],glyph:''},
   happy:{aL:20,aR:-20,wave:14,sp:0.016,mouth:'orig',lid:[0,0],glyph:''},
   oops:{aL:-22,aR:22,wave:3,mouth:'o',lid:[0,0],glyph:'?'},
@@ -1353,6 +1255,7 @@ function frame(now){
     var K=T?0.085:0.04,D=T?0.74:0.8;
     velX+=(tx-x)*K*dt;velY+=(ty-y)*K*dt;
     var damp=Math.pow(D,dt);velX*=damp;velY*=damp;
+    var vm=Math.hypot(velX,velY);if(vm>26){velX*=26/vm;velY*=26/vm;}
     x+=velX*dt;y+=velY*dt;
     vx=velX;vy=velY;
   }
@@ -1363,9 +1266,9 @@ function frame(now){
   el.style.transform='translate3d('+(x+jx).toFixed(1)+'px,'+y.toFixed(1)+'px,0)';
   if(!reduce){
     /* inclina para o lado em que anda, estica na direção do movimento e olha o ponteiro */
-    var rz=clamp(vx*1.4,-18,18)+(straining?Math.sin(now*0.09)*2.4:0)+(Date.now()<talkUntil?Math.sin(now*0.0105)*1.3:0),ry=clamp((mx-cx)*0.06,-12,12),rx=clamp(-(my-cy)*0.05+vy*0.5,-10,10);
-    var st=clamp((Math.abs(vy)-Math.abs(vx))*0.012,-0.1,0.14);
-    var sh=clamp(bodyV*0.006,0,0.08);
+    var rz=clamp(vx*0.7,-9,9)+(straining?Math.sin(now*0.09)*2.4:0)+(Date.now()<talkUntil?Math.sin(now*0.0105)*1.3:0),ry=clamp((mx-cx)*0.06,-12,12),rx=clamp(-(my-cy)*0.05+vy*0.2,-8,8);
+    var st=clamp((Math.abs(vy)-Math.abs(vx))*0.006,-0.05,0.06);
+    var sh=clamp(bodyV*0.002,0,0.03);
     tilt.style.transform='perspective(420px) rotateX('+rx.toFixed(1)+'deg) rotateY('+ry.toFixed(1)+'deg) rotate('+rz.toFixed(1)+'deg) scale('+(1-st*0.6+sh*0.3).toFixed(3)+','+(1+st-sh*0.4).toFixed(3)+')';
   }
   updateRig(now);
@@ -1402,7 +1305,7 @@ function updateRig(now){
   }
   var kA=reduce?1:0.14;
   /* ao se mover, os braços abrem um pouco, como se o vento empurrasse */
-  var ex=(!reduce&&(em==='idle'||em==='work'))?clamp(bodyV*2.2,0,24):0;
+  var ex=(!reduce&&(em==='idle'||em==='work'))?clamp(bodyV*0.5,0,7):0;
   cg.aL+=(M.aL-ex+wv-cg.aL)*kA;
   cg.aR+=(M.aR+ex+(M.alt?wv:-wv)-cg.aR)*kA;
   rg.armL.style.transform='rotate('+cg.aL.toFixed(1)+'deg)';
