@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 /* Layout: folha quadriculada de caderno. Hero com mini simulador, depois seções empilhadas.
    O simulador de barras é o único lugar com cor forte; o resto fica neutro. */
@@ -250,7 +250,7 @@ code{font:500 .92em var(--mono);background:var(--surface2);padding:1px 6px;borde
 .prof-act{width:100%;height:100%}
 .prof-anim{width:100%;height:100%;animation:profBob 2.6s ease-in-out infinite}
 .prof svg{width:100%;height:100%;display:block;overflow:visible;filter:drop-shadow(0 7px 7px rgba(0,0,0,.3))}
-.rg-m{transition:opacity .09s}
+.rg-m{transition:none}
 #rgGlyph{fill:var(--ink);stroke:var(--bg);stroke-width:7px;paint-order:stroke;font-family:var(--display);transition:opacity .2s}
 @keyframes profBob{50%{transform:translateY(-5px)}}
 .prof-bubble{position:absolute;left:0;bottom:calc(100% + 6px);width:max-content;max-width:min(240px,calc(100vw - 24px));background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);border-radius:12px;padding:8px 12px;font:500 .92rem/1.35 var(--body);opacity:0;transform:translateY(6px) scale(.96);transition:opacity .18s,transform .18s}
@@ -322,6 +322,94 @@ tr.me td:first-child{box-shadow:inset 4px 0 0 var(--min)}
   html{scroll-behavior:auto}
   *{transition-duration:.01ms!important;animation:none!important}
 }
+
+/* ===== estilo "flat dashboard": cartões cinza arredondados, sem bordas, verde/cinza/coral/amarelo ===== */
+:root{
+  --bg:#FFFFFF; --surface:#F3F3F3; --surface2:#E8E8E8; --ink:#151515; --muted:#5A5A5A; --line:#D9D9D9;
+  --grid:transparent; --accent:#0A8F6A; --on-accent:#FFFFFF;
+  --idle:#5A5A5A; --scan:#2BB5B0; --min:#FFC86B; --done:#19C79A; --hot:#F4846F;
+  --code-bg:#1F1F1F; --code-fg:#EDEDED; --code-dim:#8A8A8A; --code-hl:rgba(255,200,107,.22); --code-kw:#5FE0BD;
+  --display:'Fredoka','Segoe UI',system-ui,sans-serif;
+  --body:'IBM Plex Sans','Segoe UI',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121212; --surface:#1F1F1F; --surface2:#2B2B2B; --ink:#F2F2F2; --muted:#A9A9A9; --line:#3A3A3A;
+    --grid:transparent; --accent:#19C79A; --on-accent:#08231B;
+    --idle:#8C8C8C; --scan:#3CC9C4; --min:#FFC86B; --done:#2BD6A8; --hot:#F59481; --code-bg:#161616;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121212; --surface:#1F1F1F; --surface2:#2B2B2B; --ink:#F2F2F2; --muted:#A9A9A9; --line:#3A3A3A;
+  --grid:transparent; --accent:#19C79A; --on-accent:#08231B;
+  --idle:#8C8C8C; --scan:#3CC9C4; --min:#FFC86B; --done:#2BD6A8; --hot:#F59481; --code-bg:#161616;
+}
+body{background-image:none}
+h1,h2,h3{letter-spacing:0}
+h1{font-weight:700;letter-spacing:-.01em}
+h2{font-weight:700}
+.card{border:0;border-radius:18px}
+.top{border-bottom:0;box-shadow:0 1px 0 var(--surface2)}
+.nav a{border-radius:99px}
+.nav a[aria-current="true"]{background:var(--surface);box-shadow:none;color:var(--ink);font-weight:600}
+.pill,.chip,.var{border:0;background:var(--surface);border-radius:99px;padding-inline:14px}
+.hero-viz{background:var(--surface)}
+.btn{border:0;background:var(--surface2);border-radius:99px;padding:.6rem 1.2rem}
+.btn:hover{filter:brightness(.96)}
+.btn.primary{background:var(--done);color:#08231B}
+.btn.ghost{background:transparent;box-shadow:inset 0 0 0 2px var(--surface2)}
+input[type=text],select{background:var(--bg);border:0;border-radius:12px}
+.tab{border:0;background:var(--surface2);border-radius:99px}
+.eyebrow{color:var(--accent);font-weight:700}
+/* cartões "stat" como os da direita do modelo */
+.stat,.fact,.formula,.defbox,.step3,.dbl div{background:var(--surface);border:0;border-radius:16px}
+.card .stat,.card .formula,.card .dbl div{background:var(--bg)}
+.stat b,.fact b,.step3 .n{color:var(--ink)}
+.step3 .n{color:var(--done)}
+.fact b::before,.stat small::before{content:"";display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--done);margin-right:.45em;vertical-align:.08em}
+/* barras: baloão com valor, topos arredondados, linhas de grade */
+.stage{border-bottom:3px solid var(--ink);background:repeating-linear-gradient(to bottom,transparent 0 calc(25% - 1px),var(--surface2) calc(25% - 1px) 25%)}
+.fill{border-radius:8px 8px 0 0}
+.fill.alt{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.4) 0 6px,transparent 6px 12px)}
+.val{left:50%;right:auto;transform:translateX(-50%);bottom:calc(100% + 10px);min-width:30px;height:30px;padding:0 8px;border-radius:15px;background:var(--idle);color:#fff;font:600 .95rem/30px var(--display);text-align:center;transition:background .25s}
+.val::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:6px;margin-left:-1px;background:currentColor;opacity:.55}
+.val::before{content:"";position:absolute;left:50%;top:calc(100% + 6px);width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--idle);transition:background .25s}
+.val sup{color:inherit;opacity:.8}
+.col.is-scan .val,.col.is-scan .val::before{background:var(--scan)}
+.col.is-min .val,.col.is-min .val::before{background:var(--min);color:#2A1E00}
+.col.is-sorted .val,.col.is-sorted .val::before{background:var(--done);color:#08231B}
+.col.is-hot .val,.col.is-hot .val::before{background:var(--hot);color:#2A0E08}
+.col.is-min .val::after,.col.is-sorted .val::after,.col.is-hot .val::after{color:#444}
+.zone{border-right:2px dashed var(--done);background:color-mix(in srgb,var(--done) 14%,transparent);border-radius:8px 0 0 0}
+.pchip b{border-radius:99px;font-family:var(--display);font-weight:600;padding:2px 10px}
+.legend i{border-radius:50%}
+/* medidores como as barras amarelas do modelo */
+.meter{border:0;height:22px;border-radius:99px;background:var(--surface2)}
+.meter.c span{background:var(--min)}
+.meter.s span{background:var(--hot)}
+.meter b{line-height:22px;font-size:.85rem}
+.srow .sq{background:var(--done);border-radius:50%}
+.cell .box{border-radius:14px;border:3px solid transparent;background:var(--bg)}
+.cell.hot .box{border-color:var(--hot)}
+.cell.cmp .box{border-color:var(--scan)}
+.cell.fin .box{border-color:var(--done)}
+.order .tk{border:0;background:var(--bg);border-radius:99px;padding-inline:14px}
+.verdict,.stair-tot{border:0;border-radius:14px;background:var(--bg)}
+.verdict.bad{background:color-mix(in srgb,var(--hot) 22%,var(--bg))}
+.verdict.ok{background:color-mix(in srgb,var(--done) 22%,var(--bg))}
+.invariant{border-left:0;border-radius:18px;box-shadow:inset 6px 0 0 var(--done)}
+.cause .key{border-left:0;border-radius:14px;background:color-mix(in srgb,var(--hot) 18%,var(--surface))}
+.code,.console{border-radius:16px}
+.opt{border:0;background:var(--bg);border-radius:14px}
+.opt:hover:not([disabled]){box-shadow:inset 0 0 0 2px var(--done)}
+.opt.correct{background:color-mix(in srgb,var(--done) 24%,var(--bg))}
+.opt.wrong{background:color-mix(in srgb,var(--hot) 24%,var(--bg))}
+.qbar{height:8px;border-radius:99px;background:var(--surface2)}
+.qbar span{background:var(--done);border-radius:99px}
+th{background:var(--surface2)}
+th:first-child{border-radius:12px 0 0 12px}th:last-child{border-radius:0 12px 12px 0}
+td{border-bottom:1px solid var(--surface2)}
+.foot{border-top:0;background:var(--surface);border-radius:18px 18px 0 0;padding-inline:24px}
 </style>
 
 <header class="top">
@@ -347,7 +435,12 @@ tr.me td:first-child{box-shadow:inset 4px 0 0 var(--min)}
     <p class="lead">Ordenação por seleção. A cada passada, o menor elemento que sobrou vai para o seu lugar definitivo.</p>
     <div class="hero-meta">
       <span class="pill">Apresentação dia 19</span>
+      <span class="pill">Estruturas de Dados para Ciência de Dados</span>
+      <span class="pill">Prof. Vitor Hugo da Silva Lopes</span>
+      <span class="pill">Márcia</span>
       <span class="pill">Guilherme Aguiar Paiva</span>
+      <span class="pill">Vini</span>
+      <span class="pill">Antônia</span>
     </div>
     <a class="btn primary" href="#simulador">Ver funcionando passo a passo</a>
   </div>
@@ -613,7 +706,7 @@ tr.me td:first-child{box-shadow:inset 4px 0 0 var(--min)}
 </main>
 
 <footer class="wrap foot">
-  <p>Seminário em Grupo: Algoritmos de Ordenação. Apresentação dia 19. Guilherme Aguiar Paiva.</p>
+  <p>Estruturas de Dados para Ciência de Dados, Prof. Vitor Hugo da Silva Lopes. Seminário em Grupo: Algoritmos de Ordenação. Apresentação dia 19. Grupo: Márcia, Guilherme Aguiar Paiva, Vini e Antônia.</p>
 </footer>
 
 <div class="prof" id="prof" aria-hidden="true" hidden>
@@ -1225,9 +1318,9 @@ function effMood(){
   return 'idle';
 }
 var ANIM2MOOD={jump:'happy',nod:'agree',wiggle:'curious',shake:'oops',pop:'wow'};
-var mood='idle',moodUntil=0,talkUntil=0,blink=0,shownMouth='',cg={aL:-46,aR:46,gx:0,gy:0,lL:0,lR:0};
+var mood='idle',moodUntil=0,talkUntil=0,blink=0,shownMouth='',cg={aL:-46,aR:46,gx:0,gy:0,lL:0,lR:0,tk:1};
 var pushTop=0,gzx=0,gzy=0,typingEl=null,typingAt=0,typedFor=0,perch=null,focusKey='',hopAt=0,hoverCol=null,actAt={};
-var velX=0,velY=0,bodyV=0,lastFrame=0;
+var velX=0,velY=0,bodyV=0,lastFrame=0,bubBelow=false;
 var on=true,S=104,x=0,y=0,tx=0,ty=0,mx=0,my=0,haveMouse=false,raf=0;
 var lastMove=Date.now(),lockUntil=0,curPri=0,ambientUntil=0,idleNext=0,hideT=0,bw=0,bh=0,showing=false,lastLine='';
 var clamp=function(v,a,b){return Math.max(a,Math.min(b,v));};
@@ -1270,7 +1363,7 @@ function frame(now){
   el.style.transform='translate3d('+(x+jx).toFixed(1)+'px,'+y.toFixed(1)+'px,0)';
   if(!reduce){
     /* inclina para o lado em que anda, estica na direção do movimento e olha o ponteiro */
-    var rz=clamp(vx*1.4,-18,18)+(straining?Math.sin(now*0.09)*2.4:0),ry=clamp((mx-cx)*0.06,-12,12),rx=clamp(-(my-cy)*0.05+vy*0.5,-10,10);
+    var rz=clamp(vx*1.4,-18,18)+(straining?Math.sin(now*0.09)*2.4:0)+(Date.now()<talkUntil?Math.sin(now*0.0105)*1.3:0),ry=clamp((mx-cx)*0.06,-12,12),rx=clamp(-(my-cy)*0.05+vy*0.5,-10,10);
     var st=clamp((Math.abs(vy)-Math.abs(vx))*0.012,-0.1,0.14);
     var sh=clamp(bodyV*0.006,0,0.08);
     tilt.style.transform='perspective(420px) rotateX('+rx.toFixed(1)+'deg) rotateY('+ry.toFixed(1)+'deg) rotate('+rz.toFixed(1)+'deg) scale('+(1-st*0.6+sh*0.3).toFixed(3)+','+(1+st-sh*0.4).toFixed(3)+')';
@@ -1281,7 +1374,8 @@ function frame(now){
     left=abs-x;
     bub.style.left=left+'px';
     bub.style.setProperty('--tail',clamp(S/2-left,16,bw-16)+'px');
-    bub.classList.toggle('below',y<bh+18);
+    if(!bubBelow&&y<bh+18)bubBelow=true;else if(bubBelow&&y>bh+64)bubBelow=false;
+    bub.classList.toggle('below',bubBelow);
   }
   raf=requestAnimationFrame(frame);
 }
@@ -1334,8 +1428,15 @@ function updateRig(now){
   rg.fullR.setAttribute('opacity',fr);rg.lashR.setAttribute('opacity',fr);
   /* boca (falando alterna com a boca do humor) */
   var mouth=M.mouth;
-  if(Date.now()<talkUntil&&!reduce&&Math.floor(now/150)%2===1)mouth='talk';
+  var talking=Date.now()<talkUntil&&!reduce;
+  if(talking)mouth='talk';
   showMouth(mouth);
+  /* boca de fala: abre e fecha suavemente, sem trocar de formato a cada quadro */
+  var tk=1;
+  if(talking)tk=0.3+0.7*Math.abs(Math.sin(now*0.0105))*(0.65+0.35*Math.sin(now*0.0037+1.3));
+  cg.tk+=(tk-cg.tk)*0.4;
+  rg.m.talk.style.transformOrigin='200px 183px';
+  rg.m.talk.style.transform='scaleY('+cg.tk.toFixed(2)+')';
   rg.strain.style.opacity=em==='strain'?1:0;
   var sq=(em==='grab'||em==='strain');
   act.style.transformOrigin='50% 100%';
