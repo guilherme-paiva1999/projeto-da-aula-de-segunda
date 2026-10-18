@@ -417,6 +417,8 @@ td{border-bottom:1px solid var(--surface2)}
 .dv-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:12px 16px;border-radius:14px;background:var(--bg);font:600 1.5rem var(--display);opacity:0;transform:translateY(10px);max-height:0;padding-block:0;overflow:hidden;transition:opacity .45s,transform .45s,max-height .45s,padding .45s}
 .dv-row.on{opacity:1;transform:none;max-height:120px;padding-block:12px}
 .dv-f{display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dv-ex{font:500 .8rem var(--mono);padding:3px 9px;border-radius:99px;background:var(--surface2);color:var(--muted);margin-right:6px}
+.dv-row b{color:var(--done)}
 .dv-tag{font:500 .85rem var(--mono);padding:4px 10px;border-radius:99px;background:color-mix(in srgb,var(--done) 22%,var(--bg));color:var(--ink)}
 .pr{padding:2px 8px;border-radius:10px;background:color-mix(in srgb,var(--scan) 22%,transparent)}
 .fr{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1;vertical-align:middle;margin:0 2px}
@@ -600,17 +602,18 @@ td{border-bottom:1px solid var(--surface2)}
     <h3>Do n(n−1)/2 ao O(n²)</h3>
     <div class="dv-rows" id="dvRows">
       <div class="dv-row" data-s="0"><span class="dv-f">1 + 2 + 3 + … + (n−1)</span></div>
-      <div class="dv-row" data-s="1"><span class="dv-f"><span class="pr">(1 + (n−1))</span> + <span class="pr">(2 + (n−2))</span> + <span class="pr">(3 + (n−3))</span> + …</span><span class="dv-tag">cada par = n</span></div>
-      <div class="dv-row" data-s="2"><span class="dv-f">= n × <span class="fr"><span>(n−1)</span><span>2</span></span></span><span class="dv-tag">(n−1)/2 pares</span></div>
-      <div class="dv-row" data-s="3"><span class="dv-f">= <span class="dvA"><span class="fr"><span>n²</span><span class="dvh">2</span></span></span> <span class="dvB">− <span class="fr"><span>n</span><span>2</span></span></span></span></div>
-      <div class="dv-row dv-end" data-s="6"><span class="dv-f">= O(n²)</span></div>
+      <div class="dv-row" data-s="1"><span class="dv-f"><span class="dv-ex">exemplo n = 5</span> 1 + 2 + 3 + 4 = <span class="pr">(1 + 4)</span> + <span class="pr">(2 + 3)</span> = <b>5</b> + <b>5</b></span><span class="dv-tag">cada par = 5 = n</span></div>
+      <div class="dv-row" data-s="2"><span class="dv-f"><span class="pr">(1 + (n−1))</span> + <span class="pr">(2 + (n−2))</span> + … = <b>n</b> + <b>n</b> + …</span><span class="dv-tag">todo par soma n</span></div>
+      <div class="dv-row" data-s="3"><span class="dv-f">= n × <span class="fr"><span>(n−1)</span><span>2</span></span></span><span class="dv-tag">(n−1)/2 pares de valor n</span></div>
+      <div class="dv-row" data-s="4"><span class="dv-f">= <span class="dvA"><span class="fr"><span>n²</span><span class="dvh">2</span></span></span> <span class="dvB">− <span class="fr"><span>n</span><span>2</span></span></span></span></div>
+      <div class="dv-row dv-end" data-s="7"><span class="dv-f">= O(n²)</span></div>
     </div>
     <div class="dv-cap" id="dvCap" aria-live="polite"></div>
     <div class="stair-top">
       <button type="button" class="btn primary" id="dvNext">Próximo passo</button>
       <button type="button" class="btn ghost" id="dvPrev">Voltar</button>
       <button type="button" class="btn ghost" id="dvReset">Reiniciar</button>
-      <span class="chip" id="dvCnt">0 / 6</span>
+      <span class="chip" id="dvCnt">0 / 7</span>
     </div>
   </div>
   <div class="facts">
@@ -1176,16 +1179,16 @@ renderCode();
 /* ---------- derivação até O(n²) ---------- */
 (function(){
   var rows=$$('#dvRows .dv-row'),cap=$('#dvCap'),cnt=$('#dvCnt'),nx=$('#dvNext'),pv=$('#dvPrev'),k=0;
-  var CAP=['Ponto de partida: a soma das comparações','Junta os extremos em pares: cada par vale n','São (n−1)/2 pares, cada um valendo n','Abre a conta','Corta o termo menor: n/2 cresce menos que n²','Corta a constante: o 1/2 não conta no Big-O','Sobra O(n²)'];
+  var CAP=['Ponto de partida: a soma de todas as comparações','Exemplo com n = 5: junta o 1º com o último e o 2º com o penúltimo','Em geral: 1 + (n−1) = n, 2 + (n−2) = n… todo par soma n','São (n−1)/2 pares, e cada par vale n','Abre a conta','Corta o termo menor: n/2 cresce menos que n²','Corta a constante: o 1/2 não conta no Big-O','Sobra O(n²)'];
   function upd(){
-    rows.forEach(function(r){var s=+r.getAttribute('data-s'),vis=s===6?k>=6:(s===3?k>=3:k>=s);r.classList.toggle('on',vis);});
+    rows.forEach(function(r){r.classList.toggle('on',k>=+r.getAttribute('data-s'));});
     var b=$('#derive .dvB'),hf=$('#derive .dvh');
-    b.classList.toggle('cut',k>=4);hf.classList.toggle('cut',k>=5);
+    b.classList.toggle('cut',k>=5);hf.classList.toggle('cut',k>=6);
     cap.textContent=k===0?'Clique em “Próximo passo”':CAP[k];
-    cnt.textContent=k+' / 6';nx.disabled=k>=6;pv.disabled=k<=0;
+    cnt.textContent=k+' / 7';nx.disabled=k>=7;pv.disabled=k<=0;
   }
   rows[0].classList.add('on');
-  nx.addEventListener('click',function(){if(k<6){k++;upd();act('cost');}});
+  nx.addEventListener('click',function(){if(k<7){k++;upd();act('cost');}});
   pv.addEventListener('click',function(){if(k>0){k--;upd();}});
   $('#dvReset').addEventListener('click',function(){k=0;upd();});
   upd();
