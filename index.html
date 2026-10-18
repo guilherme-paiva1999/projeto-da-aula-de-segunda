@@ -483,6 +483,17 @@ td{border-bottom:1px solid var(--surface2)}
 .sd-row .tk.alt{background-image:repeating-linear-gradient(135deg,rgba(128,150,170,.3) 0 5px,transparent 5px 10px)}
 .sdemo-wrap .verdict{margin-top:12px}
 @media (max-width:520px){.sd-chip .in{padding:10px;font-size:1rem}.sd-chip .in b{font-size:1.1rem}}
+
+/* apertos de mão */
+.hs-grid{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:24px;align-items:center;margin-top:12px}
+#hsSvg{width:100%;max-width:340px;height:auto}
+.hs-l{stroke:var(--done);stroke-width:2.2;stroke-linecap:round;opacity:0;stroke-dasharray:400;stroke-dashoffset:400;transition:opacity .2s}
+.hs-l.on{opacity:.75;stroke-dashoffset:0;transition:stroke-dashoffset .45s ease-out,opacity .2s}
+.hs-l.last{stroke:var(--min);stroke-width:4;opacity:1}
+.hs-p{fill:var(--accent);stroke:var(--bg);stroke-width:3}
+.hs-t{fill:var(--on-accent);font:700 14px var(--display)}
+.hs .bigs{gap:14px}
+@media (max-width:700px){.hs-grid{grid-template-columns:minmax(0,1fr)}}
 </style>
 
 <header class="top">
@@ -658,8 +669,31 @@ td{border-bottom:1px solid var(--surface2)}
       <span class="chip" id="dvCnt">0 / 7</span>
     </div>
   </div>
+  <div class="card pad hs" id="hs" style="margin-top:18px">
+    <h3 style="margin-bottom:10px">3. Exemplo: apertos de mão</h3>
+    <div class="nrow">
+      <label for="hsN">Pessoas na sala</label>
+      <output id="hsNo" for="hsN">5</output>
+      <input type="range" id="hsN" min="2" max="16" value="5">
+    </div>
+    <div class="hs-grid">
+      <svg id="hsSvg" viewBox="0 0 360 360" role="img" aria-label="Pessoas em círculo. Cada linha é um aperto de mão"></svg>
+      <div class="bigs">
+        <div class="big hot"><small>apertos</small><b id="hsK">0</b><span>de <span id="hsT">10</span> no total</span></div>
+        <div class="controls">
+          <button type="button" class="btn primary" id="hsNext">Próximo aperto</button>
+          <button type="button" class="btn" id="hsAll">Mostrar todos</button>
+          <button type="button" class="btn ghost" id="hsReset">Limpar</button>
+        </div>
+        <div class="controls">
+          <button type="button" class="btn" id="hsDbl">Dobrar as pessoas</button>
+          <span class="chip" id="hsX"></span>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="card pad cost3" style="margin-top:18px">
-    <h3 style="margin-bottom:10px">3. Como o trabalho cresce</h3>
+    <h3 style="margin-bottom:10px">4. Como o trabalho cresce</h3>
     <div class="nrow">
       <label for="cRange">Tamanho da lista (n)</label>
       <output id="cOut" for="cRange">10</output>
@@ -1211,6 +1245,44 @@ renderCode();
   pv.addEventListener('click',function(){if(k>0){k--;upd();}});
   $('#dvReset').addEventListener('click',function(){k=0;upd();});
   upd();
+})();
+
+/* ---------- apertos de mão ---------- */
+(function(){
+  var svg=$('#hsSvg'),nR=$('#hsN'),k=0,N=5,pairs=[],lines=[];
+  var NS='http://www.w3.org/2000/svg';
+  function mk(tag,at){var e=document.createElementNS(NS,tag);for(var a in at)e.setAttribute(a,at[a]);return e;}
+  function total(){return N*(N-1)/2;}
+  function build(){
+    N=+nR.value;k=0;svg.innerHTML='';pairs=[];lines=[];
+    var P=[];
+    for(var i=0;i<N;i++){var a=-Math.PI/2+i*2*Math.PI/N;P.push([180+135*Math.cos(a),180+135*Math.sin(a)]);}
+    for(var i2=0;i2<N;i2++)for(var j=i2+1;j<N;j++){
+      var l=mk('line',{x1:P[i2][0],y1:P[i2][1],x2:P[j][0],y2:P[j][1],class:'hs-l'});
+      svg.appendChild(l);lines.push(l);
+    }
+    P.forEach(function(q,i){
+      var g=mk('g',{});
+      g.appendChild(mk('circle',{cx:q[0],cy:q[1],r:N>12?12:(N>9?15:18),class:'hs-p'}));
+      var t=mk('text',{x:q[0],y:q[1]+5,'text-anchor':'middle',class:'hs-t'});t.textContent=i+1;g.appendChild(t);
+      svg.appendChild(g);
+    });
+    upd();
+  }
+  function upd(){
+    $('#hsNo').textContent=N;$('#hsK').textContent=k;$('#hsT').textContent=total();
+    lines.forEach(function(l,i){l.classList.toggle('on',i<k);l.classList.toggle('last',i===k-1);});
+    var d=N*2,t=total(),td=d*(d-1)/2;
+    $('#hsDbl').disabled=d>16;
+    $('#hsX').textContent=d>16?'máximo de pessoas':'dobrar ('+d+' pessoas): '+td+' apertos, ≈ '+(td/t).toFixed(1).replace('.',',')+'× mais';
+    $('#hsNext').disabled=k>=total();
+  }
+  nR.addEventListener('input',function(){build();act('cost');});
+  $('#hsNext').addEventListener('click',function(){if(k<total()){k++;upd();act('cost');}});
+  $('#hsAll').addEventListener('click',function(){k=total();upd();act('cost');});
+  $('#hsReset').addEventListener('click',function(){k=0;upd();});
+  $('#hsDbl').addEventListener('click',function(){if(N*2<=16){nR.value=N*2;build();}act('cost');});
+  build();
 })();
 
 /* ---------- a ideia: mini animação das 3 etapas ---------- */
