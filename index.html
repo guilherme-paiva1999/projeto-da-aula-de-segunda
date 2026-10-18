@@ -459,21 +459,21 @@ td{border-bottom:1px solid var(--surface2)}
 .step3.on{box-shadow:inset 0 0 0 3px var(--done);transform:translateY(-4px)}
 .idea-demo{margin-top:18px;padding:22px}
 .mini{position:relative;height:190px;margin-bottom:34px;border-bottom:3px solid var(--ink)}
-.mb{position:absolute;bottom:0;width:18%;background:var(--idle);border-radius:8px 8px 0 0;transition:left .7s cubic-bezier(.45,0,.25,1),background .25s}
+.mb{position:absolute;bottom:0;width:18%;background:var(--idle);border-radius:8px 8px 0 0;transition:left .45s cubic-bezier(.45,0,.25,1),background .25s}
 .mb b{position:absolute;bottom:100%;left:0;right:0;text-align:center;font:700 1.1rem var(--display);padding-bottom:4px}
 .mb.is-scan{background:var(--scan)}.mb.is-min{background:var(--min)}.mb.is-sorted{background:var(--done)}.mb.is-hot{background:var(--hot)}
 /* estabilidade */
 .sdemo-wrap{padding:22px}
 .sd-lab{font:600 .85rem var(--mono);color:var(--muted);margin-bottom:10px}
 .sd-stage{position:relative;height:84px}
-.sd-chip{position:absolute;top:0;width:31%;transition:left .9s cubic-bezier(.45,0,.25,1)}
+.sd-chip{position:absolute;top:0;width:31%;transition:left .6s cubic-bezier(.45,0,.25,1)}
 .sd-chip .in{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:16px 18px;border-radius:16px;background:var(--bg);box-shadow:inset 0 0 0 3px transparent;font:700 1.25rem var(--display);transition:box-shadow .3s}
 .sd-chip .in.alt{background-image:repeating-linear-gradient(135deg,rgba(128,150,170,.3) 0 6px,transparent 6px 12px)}
 .sd-chip .in b{font:700 1.5rem var(--mono)}
 .sd-chip .in.min{box-shadow:inset 0 0 0 3px var(--min)}
 .sd-chip .in.ok{box-shadow:inset 0 0 0 3px var(--done)}
 .sd-chip .in.hot{box-shadow:inset 0 0 0 3px var(--hot)}
-.sd-chip .in.hop{animation:sdHop .9s ease-in-out}
+.sd-chip .in.hop{animation:sdHop .6s ease-in-out}
 @keyframes sdHop{50%{transform:translateY(-46px) scale(1.06)}}
 .sd-cap{min-height:3em;margin-top:10px;font:600 1.1rem var(--display)}
 .sd-ideal{margin-top:6px;max-height:0;opacity:0;overflow:hidden;transition:max-height .5s,opacity .5s}
@@ -660,6 +660,17 @@ td{border-bottom:1px solid var(--surface2)}
   </div>
   <div class="card pad cost3" style="margin-top:18px">
     <h3 style="margin-bottom:10px">3. Como o trabalho cresce</h3>
+    <div class="nrow">
+      <label for="cRange">Tamanho da lista (n)</label>
+      <output id="cOut" for="cRange">10</output>
+      <input type="range" id="cRange" min="2" max="40" value="10">
+    </div>
+    <div class="m-stats">
+      <span class="chip">comparações <b id="cV1">45</b></span>
+      <span class="chip" id="cV2wrap">se dobrar o n: <b id="cV2">190</b> <span id="cX"></span></span>
+      <button type="button" class="btn" id="cDbl">Dobrar n</button>
+      <button type="button" class="btn ghost" id="cHalf">Metade</button>
+    </div>
     <div class="chartbox"><svg id="chart" viewBox="0 0 640 330" role="img" aria-label="Gráfico: crescimento de n e de n(n−1)/2 para n de 1 a 40"></svg></div>
   </div>
   <div class="facts">
@@ -886,7 +897,7 @@ Viz.prototype.setState=function(s){
 
 /* ---------- player ---------- */
 var DELAYS=[3200,2000,1400,800,350];
-var SWAP_MS=[4200,3400,2800,1900,1100],GRAB_MS=900,REL_MS=800,MANUAL_T=2800;
+var SWAP_MS=[2500,2000,1600,1100,650],GRAB_MS=500,REL_MS=450,MANUAL_T=1700;
 var REDUCE=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var setPhase=function(root,ph){root.dataset.swap=ph;try{window.dispatchEvent(new CustomEvent('profswap',{detail:{phase:ph}}));}catch(e){}};
 var LEGEND='<div class="legend"><span><i style="background:var(--idle)"></i>ainda não visitado</span><span><i style="background:var(--scan)"></i>sendo comparado (j)</span><span><i style="background:var(--min)"></i>menor até agora</span><span><i style="background:var(--hot)"></i>trocando</span><span><i style="background:var(--done)"></i>posição final</span></div>';
@@ -1133,7 +1144,6 @@ renderCode();
     }
     tri.style.gridTemplateColumns='repeat('+n+',1fr)';
     tri.innerHTML=h;
-    drawChart(n);
   }
   function drawChart(n){
     var W=640,H=330,L=50,R=96,T=18,B=46,XM=40,YM=800;
@@ -1144,7 +1154,7 @@ renderCode();
     [0,200,400,600,800].forEach(function(v){s+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'"/><text class="ct" x="'+(L-8)+'" y="'+(Y(v)+5)+'" text-anchor="end">'+v+'</text>';});
     [0,10,20,30,40].forEach(function(v){s+='<text class="ct" x="'+X(v)+'" y="'+(H-B+22)+'" text-anchor="middle">'+v+'</text>';});
     s+='<line class="ax" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(0)+'" y2="'+Y(0)+'"/>';
-    s+='<text class="ct" x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle">n (tamanho do lista)</text>';
+    s+='<text class="ct" x="'+((L+W-R)/2)+'" y="'+(H-6)+'" text-anchor="middle">n (tamanho da lista)</text>';
     s+='<path d="'+path(function(k){return k;})+'" fill="none" stroke="var(--idle)" stroke-width="3"/>';
     s+='<path d="'+path(function(k){return k*(k-1)/2;})+'" fill="none" stroke="var(--hot)" stroke-width="4"/>';
     s+='<text class="ct" x="'+(X(40)+8)+'" y="'+(Y(40)+5)+'">n</text>';
@@ -1156,6 +1166,30 @@ renderCode();
     s+='<text class="ctb" x="'+lx+'" y="'+(Y(cv)-12)+'" text-anchor="'+anc+'">n = '+n+' → '+cv+'</text>';
     $('#chart').innerHTML=s;
   }
+  var cR=$('#cRange'),cn=+cR.value;
+  function cDraw(){
+    cR.value=cn;$('#cOut').textContent=cn;
+    var v=cn*(cn-1)/2,d=Math.min(cn*2,40),vd=d*(d-1)/2;
+    $('#cV1').textContent=v;
+    $('#cV2').textContent=vd;
+    $('#cX').textContent=d===cn?'(máximo)':'(≈ '+(v?(vd/v).toFixed(1).replace('.',','):'–')+'× mais)';
+    drawChart(cn);
+  }
+  cR.addEventListener('input',function(){cn=+cR.value;cDraw();act('cost');});
+  $('#cDbl').addEventListener('click',function(){cn=Math.min(cn*2,40);cDraw();act('cost');});
+  $('#cHalf').addEventListener('click',function(){cn=Math.max(Math.round(cn/2),2);cDraw();act('cost');});
+  var chartEl=$('#chart');
+  function pick(e){
+    var r=chartEl.getBoundingClientRect(),W=640,L=50,R=96;
+    var x=(e.clientX-r.left)/r.width*W,v=Math.round((x-L)/(W-L-R)*40);
+    cn=Math.max(2,Math.min(40,v));cDraw();
+  }
+  var drag=false;
+  chartEl.addEventListener('pointerdown',function(e){drag=true;pick(e);act('cost');});
+  addEventListener('pointermove',function(e){if(drag)pick(e);});
+  addEventListener('pointerup',function(){drag=false;});
+  chartEl.style.cursor='ew-resize';chartEl.style.touchAction='pan-y';
+  cDraw();
   nR.addEventListener('input',function(){render();act('cost');});
   nR.addEventListener('change',function(){var n=+nR.value;prof('Com n = '+n+' são '+(n*(n-1)/2)+' comparações. Sempre.',{anim:'nod',priority:3});});
   render();
