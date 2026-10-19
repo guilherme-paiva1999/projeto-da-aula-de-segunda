@@ -705,20 +705,20 @@ td{border-bottom:1px solid var(--surface2)}
   </div>
   <div class="card pad" style="margin-bottom:18px">
     <h3>O que isso quer dizer</h3>
-    <p>Ordenar os alunos pela nota. Ana e Bruno têm nota 7, e a Ana estava antes do Bruno na lista original.</p>
+    <p>A lista de alunos já está em <b>ordem alfabética</b>: Ana vem antes de Bruno, porque A vem antes de B. Agora vamos ordenar pela <b>nota</b>. Ana e Bruno empatam com nota 7.</p>
     <ul class="stab-points">
-      <li><b>Algoritmo estável:</b> depois de ordenar, a Ana continua antes do Bruno.</li>
-      <li><b>Selection Sort:</b> a Ana pode acabar depois do Bruno. A ordem de quem empata não é garantida.</li>
+      <li><b>Algoritmo estável:</b> quem empata mantém a ordem que já tinha, então a Ana continua antes do Bruno, ainda em ordem alfabética.</li>
+      <li><b>Selection Sort:</b> a Ana pode acabar depois do Bruno, e a ordem alfabética entre os empatados se perde. Isso não é garantido.</li>
     </ul>
     <p><b>Por que acontece:</b> ele troca o menor valor direto com a posição da vez, e quem estava nessa posição vai parar longe, pulando por cima de outros itens, inclusive de um item de mesma nota. Veja o passo a passo abaixo.</p>
     <p class="note">Com números simples isso não faz diferença. Importa quando cada item carrega algo a mais, como o nome de um aluno.</p>
   </div>
   <div class="card sdemo-wrap">
-    <div class="sd-lab">Antes de ordenar: Ana vem antes do Bruno</div>
+    <div class="sd-lab">Antes de ordenar (ordem alfabética): Ana vem antes do Bruno</div>
     <div class="sd-stage" id="sdStage" aria-live="polite"></div>
     <div class="sd-cap" id="sdCap"></div>
     <div class="sd-ideal" id="sdIdeal">
-      <div class="sd-lab">O certo seria (empatados mantêm a ordem)</div>
+      <div class="sd-lab">O certo seria (empatados mantêm a ordem alfabética)</div>
       <div class="sd-row" id="sdIdealRow"></div>
     </div>
     <div class="verdict" id="sdVerdict" hidden></div>
@@ -1283,7 +1283,7 @@ renderCode();
     cap.textContent=st.cap;
     ideal.classList.toggle('show',!!st.bad);
     vd.hidden=!st.bad;vd.className='verdict'+(st.bad?' bad':'');
-    if(st.bad)vd.textContent='Ana e Bruno empataram, mas a Ana, que vinha antes, ficou depois do Bruno. O Selection Sort NÃO mantém a ordem de quem empata, por isso é instável.';
+    if(st.bad)vd.textContent='Ana e Bruno empataram, mas a Ana, que vinha antes (A antes de B), ficou depois do Bruno. O Selection Sort NÃO mantém a ordem de quem empata, por isso é instável.';
     cnt.textContent='Passo '+(k+1)+' de '+STEPS.length;
     pv.disabled=k===0;nx.textContent=k===STEPS.length-1?'Recomeçar':'Próximo';
     if(k===2)prof('Olha só! A Ana pulou por cima do Bruno.',{anim:'shake',priority:3,gap:2500});
