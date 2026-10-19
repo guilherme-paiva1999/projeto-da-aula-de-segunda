@@ -633,23 +633,8 @@ td{border-bottom:1px solid var(--surface2)}
       </div>
     </div>
   </div>
-  <div class="card pad cost3" style="margin-top:18px">
-    <h3 style="margin-bottom:10px">2. Como o trabalho cresce</h3>
-    <div class="nrow">
-      <label for="cRange">Tamanho da lista (n)</label>
-      <output id="cOut" for="cRange">10</output>
-      <input type="range" id="cRange" min="2" max="40" value="10">
-    </div>
-    <div class="m-stats">
-      <span class="chip">comparações <b id="cV1">45</b></span>
-      <span class="chip" id="cV2wrap">se dobrar o n: <b id="cV2">190</b> <span id="cX"></span></span>
-      <button type="button" class="btn" id="cDbl">Dobrar n</button>
-      <button type="button" class="btn ghost" id="cHalf">Metade</button>
-    </div>
-    <div class="chartbox"><svg id="chart" viewBox="0 0 640 330" role="img" aria-label="Gráfico: crescimento de n e de n(n−1)/2 para n de 1 a 40"></svg></div>
-  </div>
   <div class="card derive" id="derive">
-    <h3>3. De n(n−1)/2 até n²</h3>
+    <h3>2. De n(n−1)/2 até n²</h3>
     <div class="dv-rows" id="dvRows">
       <div class="dv-row" data-s="0"><span class="dv-f">1 + 2 + 3 + … + (n−1)</span></div>
       <div class="dv-row" data-s="1"><span class="dv-f"><span class="dv-ex">exemplo n = 5</span> 1 + 2 + 3 + 4 = <span class="pr">(1 + 4)</span> + <span class="pr">(2 + 3)</span> = <b>5</b> + <b>5</b></span><span class="dv-tag">cada par = 5 = n</span></div>
@@ -667,7 +652,7 @@ td{border-bottom:1px solid var(--surface2)}
     </div>
   </div>
   <div class="card pad hs" id="hs" style="margin-top:18px">
-    <h3 style="margin-bottom:10px">4. Exemplo: apertos de mão</h3>
+    <h3 style="margin-bottom:10px">3. Exemplo: apertos de mão</h3>
     <div class="nrow">
       <label for="hsN">Pessoas na sala</label>
       <output id="hsNo" for="hsN">5</output>
@@ -688,6 +673,21 @@ td{border-bottom:1px solid var(--surface2)}
         </div>
       </div>
     </div>
+  </div>
+  <div class="card pad cost3" style="margin-top:18px">
+    <h3 style="margin-bottom:10px">4. Como o trabalho cresce</h3>
+    <div class="nrow">
+      <label for="cRange">Tamanho da lista (n)</label>
+      <output id="cOut" for="cRange">10</output>
+      <input type="range" id="cRange" min="2" max="40" value="10">
+    </div>
+    <div class="m-stats">
+      <span class="chip">comparações <b id="cV1">45</b></span>
+      <span class="chip" id="cV2wrap">se dobrar o n: <b id="cV2">190</b> <span id="cX"></span></span>
+      <button type="button" class="btn" id="cDbl">Dobrar n</button>
+      <button type="button" class="btn ghost" id="cHalf">Metade</button>
+    </div>
+    <div class="chartbox"><svg id="chart" viewBox="0 0 640 330" role="img" aria-label="Gráfico: crescimento de n e de n(n−1)/2 para n de 1 a 40"></svg></div>
   </div>
   <div class="facts">
     <div class="card fact"><b>O(n²)</b><span>Tempo: cresce ao quadrado</span></div>
