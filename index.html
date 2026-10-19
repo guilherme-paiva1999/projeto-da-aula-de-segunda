@@ -201,6 +201,8 @@ input[type=text],select{font:500 1rem var(--mono);padding:.55rem .75rem;border:1
 .why .card{padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .why h3{margin-bottom:2px}
 .why p{font-size:.98rem}
+.stab-points{margin:10px 0;padding-left:1.2em}
+.stab-points li+li{margin-top:6px}
 .why ul{margin:0;padding-left:1.2em;color:var(--muted);font-size:.98rem}
 .why li+li{margin-top:8px}
 .why .lab{font:500 .72rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:4px}
@@ -504,7 +506,6 @@ td{border-bottom:1px solid var(--surface2)}
     <span class="brand">Selection Sort</span>
     <nav class="nav" aria-label="Seções">
       <a href="#ideia">A ideia</a>
-      <a href="#jogo">Faça você</a>
       <a href="#simulador">Simulador</a>
       <a href="#custo">Custo</a>
       <a href="#estabilidade">Estabilidade</a>
@@ -557,29 +558,6 @@ td{border-bottom:1px solid var(--surface2)}
       <button type="button" class="btn ghost" id="miniReset">Recomeçar</button>
       <span class="chip" id="miniCap"></span>
     </div>
-  </div>
-</section>
-
-<section class="wrap sec" id="jogo">
-  <div class="sec-head">
-    <h2>Agora você é o algoritmo</h2>
-    <p class="lead">Clique na barra de menor valor.</p>
-  </div>
-  <div class="card manual-wrap">
-    <div id="manualViz"></div>
-    <p class="caption" id="manualCap" aria-live="polite"></p>
-    <div class="m-stats">
-      <span class="chip">trocas <b id="mSwaps">0</b></span>
-      <span class="chip">erros <b id="mErr">0</b></span>
-      <button type="button" class="btn" id="mHint">Dica</button>
-      <button type="button" class="btn ghost" id="mNew">Nova lista aleatória</button>
-    </div>
-    <form class="arrform" id="mForm" autocomplete="off">
-      <label class="sr" for="mIn">Sua lista de números, separados por vírgula</label>
-      <input type="text" id="mIn" placeholder="Ex.: 7, 3, 9, 1, 5, 2" inputmode="numeric">
-      <button type="submit" class="btn primary">Usar minha lista</button>
-    </form>
-    <p class="err" id="mErrMsg" role="status"></p>
   </div>
 </section>
 
@@ -723,7 +701,17 @@ td{border-bottom:1px solid var(--surface2)}
 <section class="wrap sec" id="estabilidade">
   <div class="sec-head">
     <h2>Ele mantém a ordem de quem empata?</h2>
-    <p class="lead">Ordenar os alunos pela nota. Ana e Bruno têm nota 7.</p>
+    <p class="lead"><b>Não.</b> O Selection Sort é <b>instável</b>: quando dois itens têm o mesmo valor, ele pode trocá-los de ordem.</p>
+  </div>
+  <div class="card pad" style="margin-bottom:18px">
+    <h3>O que isso quer dizer</h3>
+    <p>Ordenar os alunos pela nota. Ana e Bruno têm nota 7, e a Ana estava antes do Bruno na lista original.</p>
+    <ul class="stab-points">
+      <li><b>Algoritmo estável:</b> depois de ordenar, a Ana continua antes do Bruno.</li>
+      <li><b>Selection Sort:</b> a Ana pode acabar depois do Bruno. A ordem de quem empata não é garantida.</li>
+    </ul>
+    <p><b>Por que acontece:</b> ele troca o menor valor direto com a posição da vez, e quem estava nessa posição vai parar longe, pulando por cima de outros itens, inclusive de um item de mesma nota. Veja o passo a passo abaixo.</p>
+    <p class="note">Com números simples isso não faz diferença. Importa quando cada item carrega algo a mais, como o nome de um aluno.</p>
   </div>
   <div class="card sdemo-wrap">
     <div class="sd-lab">Antes de ordenar: Ana vem antes do Bruno</div>
@@ -1064,89 +1052,6 @@ Player.prototype.stop=function(){clearTimeout(this.timer);this.timer=null;this.p
   start();
 })();
 
-/* ---------- jogo manual ---------- */
-(function(){
-  var root=$('#manualViz'),cap=$('#manualCap'),swEl=$('#mSwaps'),erEl=$('#mErr');
-  var vals,order,sorted,i,busy,swaps,errs,viz,done;
-  function state(extra){
-    var s={order:order.slice(),sorted:sorted.slice(),i:done?null:i,j:null,min:null,hot:null};
-    if(extra){for(var k in extra){s[k]=extra[k];}}return s;
-  }
-  function newGame(list){
-    vals=list||shuffle([1,2,3,4,5,6,7,8,9]).slice(0,6);
-    order=vals.map(function(_,k){return k;});sorted=[];i=0;busy=false;swaps=0;errs=0;done=false;
-    viz=new Viz(root,toItems(vals),{pointers:['i'],height:240,click:onClick});
-    root.style.setProperty('--t','1000ms');
-    viz.setState(state());act('manual');
-    swEl.textContent='0';erEl.textContent='0';
-    cap.textContent='Qual é o menor valor entre as barras que ainda não estão verdes? Clique nele.';
-  }
-  function trueMin(){var mp=i;for(var k=i+1;k<vals.length;k++){if(vals[order[k]]<vals[order[mp]])mp=k;}return mp;}
-  function onClick(id){
-    if(busy||done)return;
-    act('manual');
-    var p=order.indexOf(id);
-    if(p<i){cap.textContent='Essa barra já está no lugar. Escolha uma das barras não verdes.';return;}
-    var mp=trueMin();
-    if(vals[id]===vals[order[mp]]){
-      mp=p;
-      busy=true;viz.setState(state({min:p}));
-      cap.textContent='Isso! '+vals[id]+' é o menor. Ele vai para a posição '+i+'.';
-      prof('Isso! '+vals[id]+' era o menor mesmo.',{anim:'nod',priority:3});
-      setTimeout(function(){
-        var pi=i,pm=mp;
-        var finish=function(){
-          i++;
-          if(i>=vals.length-1){
-            sorted.push(order[vals.length-1]);done=true;
-            cap.textContent='Ordenado! Você fez '+swaps+' trocas e '+errs+' erro'+(errs===1?'':'s')+'. O algoritmo nunca erra, mas precisa comparar um valor por vez.';
-            prof('Ordenou tudo! '+swaps+' trocas e '+errs+' erro'+(errs===1?'':'s')+'. Interessante...',{anim:'jump',confetti:true,priority:4});
-          }else{
-            cap.textContent='Boa. Agora procure o menor entre as posições '+i+' e '+(vals.length-1)+'.';
-          }
-          viz.setState(state());busy=false;
-        };
-        if(pm===pi||REDUCE){
-          var hot0=null;
-          if(pm!==pi){var t0=order[pi];order[pi]=order[pm];order[pm]=t0;swaps++;hot0=[order[pi],order[pm]];}
-          sorted.push(order[pi]);swEl.textContent=swaps;
-          viz.setState(state({hot:hot0}));
-          setTimeout(finish,1300);return;
-        }
-        var oldI=order[pi],oldM=order[pm];
-        viz.setState(state({hot:[oldM,oldI]}));
-        setPhase(root,'grab');
-        setTimeout(function(){
-          root.style.setProperty('--t',MANUAL_T+'ms');
-          order[pi]=oldM;order[pm]=oldI;swaps++;swEl.textContent=swaps;
-          sorted.push(order[pi]);
-          viz.setState(state({hot:[oldM,oldI]}));
-          setPhase(root,'move');
-          setTimeout(function(){setPhase(root,'release');},MANUAL_T+150);
-          setTimeout(function(){setPhase(root,'');root.style.setProperty('--t','1000ms');finish();},MANUAL_T+150+REL_MS);
-        },GRAB_MS);
-      },900);
-    }else{
-      errs++;erEl.textContent=errs;
-      var c=viz.cols[id];c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake');
-      cap.textContent=vals[id]+' não é o menor. Ainda existe um valor menor entre as barras não verdes.';
-      prof(vals[id]+'? Hum... não é esse não.',{anim:'shake',priority:3});
-    }
-  }
-  $('#mHint').addEventListener('click',function(){
-    if(busy||done)return;
-    var c=viz.cols[order[trueMin()]];c.classList.add('hint');prof('Pediu dica? Hum... tudo bem, só dessa vez.',{anim:'wiggle',priority:3});
-    setTimeout(function(){c.classList.remove('hint');},1500);
-  });
-  $('#mNew').addEventListener('click',function(){$('#mErrMsg').textContent='';newGame();});
-  $('#mForm').addEventListener('submit',function(e){
-    e.preventDefault();var nums=parseArr($('#mIn').value);
-    if(!nums){$('#mErrMsg').textContent='Use de 2 a 12 números inteiros entre 1 e 99, separados por vírgula.';return;}
-    $('#mErrMsg').textContent='';newGame(nums);prof('Lista própria? Interessante... vamos ver.',{anim:'wiggle',priority:3});
-  });
-  newGame();
-})();
-
 /* ---------- simulador principal ---------- */
 var CODE={
   python:[['def selection_sort(a):','','recebe a lista'],['    n = len(a)','','n = tamanho'],['    for i in range(n - 1):','outer','i = posição atual'],['        menor = i','setmin','menor começa em i'],['        for j in range(i + 1, n):','inner','j = posição que olho'],['            if a[j] < a[menor]:','cmp','j é menor?'],['                menor = j','newmin','sim: novo menor'],['        if menor != i:','swap','precisa trocar?'],['            a[i], a[menor] = a[menor], a[i]','swap','menor vai para i'],['    return a','','devolve a lista ordenada']]
@@ -1378,7 +1283,7 @@ renderCode();
     cap.textContent=st.cap;
     ideal.classList.toggle('show',!!st.bad);
     vd.hidden=!st.bad;vd.className='verdict'+(st.bad?' bad':'');
-    if(st.bad)vd.textContent='Ana e Bruno empataram, mas trocaram de ordem. Por isso o Selection Sort é instável.';
+    if(st.bad)vd.textContent='Ana e Bruno empataram, mas a Ana, que vinha antes, ficou depois do Bruno. O Selection Sort NÃO mantém a ordem de quem empata, por isso é instável.';
     cnt.textContent='Passo '+(k+1)+' de '+STEPS.length;
     pv.disabled=k===0;nx.textContent=k===STEPS.length-1?'Recomeçar':'Próximo';
     if(k===2)prof('Olha só! A Ana pulou por cima do Bruno.',{anim:'shake',priority:3,gap:2500});
@@ -1608,7 +1513,7 @@ function caretX(inp,r){
   var x=r.left+(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.borderLeftWidth)||0)+w-inp.scrollLeft;
   return clamp(x,r.left+20,r.right-20);
 }
-var CHARTS=[{id:'main',sel:'#mainPlayer .viz'},{id:'stab',sel:'#stabPlayer .viz'},{id:'manual',sel:'#manualViz'},{id:'cost',sel:'#chart'}];
+var CHARTS=[{id:'main',sel:'#mainPlayer .viz'},{id:'stab',sel:'#stabPlayer .viz'},{id:'cost',sel:'#chart'}];
 addEventListener('profswap',function(e){
   var ph=e.detail&&e.detail.phase;
   if(ph==='grab'){bub.classList.remove('show');showing=false;clearTimeout(hideT);curPri=0;lastMove=Date.now();setMood('idle');}
@@ -1797,12 +1702,10 @@ addEventListener('pointermove',function(e){
 
 /* ---------- reações ao passar o mouse ---------- */
 var RULES=[
-  ['#mHint',['Pedindo dica? Hum...'],'wiggle'],
   ['#jNo',['Hum... pensa bem antes de clicar nesse.'],'wiggle'],
   ['#jYes',['Confiante, hein? Interessante...'],'nod'],
   ['#main-play',['Reproduzir? Presta atenção nos amarelos.'],'nod'],
   ['#main-next',['Um passo de cada vez. Assim que se aprende.'],'nod'],
-  ['#manualViz .col',['Vai clicar nessa? Tem certeza?','Hum... será que é o menor?'],'wiggle'],
   ['.stage .col',['Hum, olhando as barras, hein?','Interessante... qual será o menor?','Estou vendo você de olho nessa barra.'],'wiggle'],
   ['.code',['Código! Hum, um laço dentro de outro.','O for de dentro é quem procura o menor.','Interessante... leia com calma.'],'nod'],
   ['input[type=text]',['Digitando uma lista? Quero ver.','Cuidado com número repetido, hein.'],'wiggle'],
@@ -1831,7 +1734,6 @@ document.addEventListener('click',function(){
 /* ---------- seções: reage quando o conteúdo chega ao centro da tela ---------- */
 var SEC=[
   ['ideia','#ideia .steps3','A fila de alunos... clássico. Estou vendo aqui.'],
-  ['jogo','#jogo .manual-wrap','Agora é com você. Quero ver achar o menor.'],
   ['simulador','#simStart','Hum, o passo a passo. Digite uma lista aí.'],
   ['custo','#custo .cost-grid','O(n²)... isso pesa em lista grande.'],
   ['estabilidade','#estabilidade .stab-grid','Instável? Hum, quero ver explicar isso.'],
