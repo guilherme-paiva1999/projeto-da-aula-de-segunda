@@ -494,6 +494,7 @@ td{border-bottom:1px solid var(--surface2)}
 .hs-t{fill:var(--on-accent);font:700 14px var(--display)}
 .hs .bigs{gap:14px}
 @media (max-width:700px){.hs-grid{grid-template-columns:minmax(0,1fr)}}
+.code .cm{color:var(--code-dim);font-style:italic;font-size:.88em}
 </style>
 
 <header class="top">
@@ -609,11 +610,11 @@ td{border-bottom:1px solid var(--surface2)}
           <div class="stat"><small>No lugar</small><b id="cDone">0</b></div>
         </div>
         <div class="vars" aria-label="Variáveis do algoritmo">
-          <span class="var vi">i = <b id="vI">–</b></span>
-          <span class="var vj">j = <b id="vJ">–</b></span>
-          <span class="var vm">menor = <b id="vM">–</b></span>
-          <span class="var">a[j] = <b id="vAj">–</b></span>
-          <span class="var">a[menor] = <b id="vAm">–</b></span>
+          <span class="var vi">posição atual (i) = <b id="vI">–</b></span>
+          <span class="var vj">olhando (j) = <b id="vJ">–</b></span>
+          <span class="var vm">menor até agora = <b id="vM">–</b></span>
+          <span class="var">valor de j = <b id="vAj">–</b></span>
+          <span class="var">valor do menor = <b id="vAm">–</b></span>
         </div>
       </div>
       <div class="card pad">
@@ -1110,7 +1111,7 @@ Player.prototype.stop=function(){clearTimeout(this.timer);this.timer=null;this.p
 
 /* ---------- simulador principal ---------- */
 var CODE={
-  python:[['def selection_sort(a):',''],['    n = len(a)',''],['    for i in range(n - 1):','outer'],['        menor = i','setmin'],['        for j in range(i + 1, n):','inner'],['            if a[j] < a[menor]:','cmp'],['                menor = j','newmin'],['        a[i], a[menor] = a[menor], a[i]','swap']]
+  python:[['def selection_sort(a):','','recebe a lista'],['    n = len(a)','','n = tamanho'],['    for i in range(n - 1):','outer','i = posição atual'],['        menor = i','setmin','menor começa em i'],['        for j in range(i + 1, n):','inner','j = posição que olho'],['            if a[j] < a[menor]:','cmp','j é menor?'],['                menor = j','newmin','sim: novo menor'],['        a[i], a[menor] = a[menor], a[i]','swap','menor vai para i']]
 };
 var HL={init:[],outer:['outer'],setmin:['setmin'],cmp:['inner','cmp'],newmin:['newmin'],swap:['swap'],done:[]};
 var lang='python',curStep=null;
@@ -1118,7 +1119,7 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g
 function renderCode(){
   var kw=/\b(def|for|in|range|if|int|void|static|len)\b/g;
   $('#codeBox').innerHTML=CODE[lang].map(function(l){
-    return '<span class="ln" data-t="'+l[1]+'">'+esc(l[0]).replace(kw,'<span class="kw">$1</span>')+'</span>';
+    return '<span class="ln" data-t="'+l[1]+'">'+esc(l[0]).replace(kw,'<span class="kw">$1</span>')+(l[2]?'<span class="cm">  # '+l[2]+'</span>':'')+'</span>';
   }).join('');
   hlCode();
 }
