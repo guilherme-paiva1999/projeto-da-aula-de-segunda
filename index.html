@@ -201,6 +201,8 @@ input[type=text],select{font:500 1rem var(--mono);padding:.55rem .75rem;border:1
 .why .card{padding:22px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .why h3{margin-bottom:2px}
 .why p{font-size:.98rem}
+.why ul{margin:0;padding-left:1.2em;color:var(--muted);font-size:.98rem}
+.why li+li{margin-top:8px}
 .why .lab{font:500 .72rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:4px}
 .why .order{margin-top:0;font-size:.95rem}
 .cause{margin-top:18px;padding:22px}
@@ -506,6 +508,7 @@ td{border-bottom:1px solid var(--surface2)}
       <a href="#simulador">Simulador</a>
       <a href="#custo">Custo</a>
       <a href="#estabilidade">Estabilidade</a>
+      <a href="#prosecontras">Prós e contras</a>
       <a href="#final">Final</a>
     </nav>
     <button type="button" class="btn ghost proftoggle" id="profToggle" aria-pressed="true">Professor: ligado</button>
@@ -735,6 +738,41 @@ td{border-bottom:1px solid var(--surface2)}
       <button type="button" class="btn ghost" id="sdPrev">Voltar</button>
       <button type="button" class="btn primary" id="sdNext">Próximo</button>
       <span class="cnt" id="sdCnt"></span>
+    </div>
+  </div>
+</section>
+
+<section class="wrap sec" id="prosecontras">
+  <div class="sec-head">
+    <h2>Vantagens, limitações e quando usar</h2>
+    <p class="lead">Resumo do que vimos, com o motivo de cada ponto.</p>
+  </div>
+  <div class="why">
+    <div class="card">
+      <h3>Vantagens</h3>
+      <ul>
+        <li><b>Simples.</b> São dois laços e uma troca, fácil de explicar e de escrever.</li>
+        <li><b>Pouca memória.</b> Ordena no próprio vetor, com O(1) de espaço extra.</li>
+        <li><b>Poucas trocas.</b> No máximo n−1, porque cada passada faz no máximo uma troca.</li>
+        <li><b>Previsível.</b> Sempre faz n(n−1)/2 comparações, em qualquer ordem dos dados.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Limitações</h3>
+      <ul>
+        <li><b>Lento em listas grandes.</b> O(n²) no melhor, médio e pior caso: dobrar o tamanho quadruplica o trabalho.</li>
+        <li><b>Não aproveita dados ordenados.</b> Varre tudo o que sobrou mesmo se a lista já estiver em ordem.</li>
+        <li><b>Instável.</b> A troca à distância pode inverter a ordem de valores iguais.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Quando faz sentido</h3>
+      <ul>
+        <li><b>Listas pequenas</b>, onde o O(n²) não pesa.</li>
+        <li><b>Escrever é caro</b>, como em memória flash, pois ele faz poucas trocas.</li>
+        <li><b>Ensino.</b> A lógica é fácil de visualizar passo a passo.</li>
+        <li>Para listas grandes, prefira Merge Sort ou Quick Sort, com O(n log n) no caso médio.</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -1111,7 +1149,7 @@ Player.prototype.stop=function(){clearTimeout(this.timer);this.timer=null;this.p
 
 /* ---------- simulador principal ---------- */
 var CODE={
-  python:[['def selection_sort(a):','','recebe a lista'],['    n = len(a)','','n = tamanho'],['    for i in range(n - 1):','outer','i = posição atual'],['        menor = i','setmin','menor começa em i'],['        for j in range(i + 1, n):','inner','j = posição que olho'],['            if a[j] < a[menor]:','cmp','j é menor?'],['                menor = j','newmin','sim: novo menor'],['        a[i], a[menor] = a[menor], a[i]','swap','menor vai para i']]
+  python:[['def selection_sort(a):','','recebe a lista'],['    n = len(a)','','n = tamanho'],['    for i in range(n - 1):','outer','i = posição atual'],['        menor = i','setmin','menor começa em i'],['        for j in range(i + 1, n):','inner','j = posição que olho'],['            if a[j] < a[menor]:','cmp','j é menor?'],['                menor = j','newmin','sim: novo menor'],['        if menor != i:','swap','precisa trocar?'],['            a[i], a[menor] = a[menor], a[i]','swap','menor vai para i'],['    return a','','devolve a lista ordenada']]
 };
 var HL={init:[],outer:['outer'],setmin:['setmin'],cmp:['inner','cmp'],newmin:['newmin'],swap:['swap'],done:[]};
 var lang='python',curStep=null;
